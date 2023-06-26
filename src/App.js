@@ -6,6 +6,10 @@ import Header from './components/common/Header';
 
 // main
 import Visual from './components/main/Visual';
+import News from './components/main/News';
+import Pics from './components/main/Pics';
+import Vids from './components/main/Vids';
+import Banner from './components/main/Banner';
 
 // sub
 import Community from './components/sub/Community';
@@ -20,8 +24,12 @@ function App() {
 		<>
 			<Header />
 
-			<Route path='/'>
+			<Route exact path='/'>
 				<Visual />
+				<News />
+				<Pics />
+				<Vids />
+				<Banner />
 			</Route>
 
 			<Route path='/department'>
