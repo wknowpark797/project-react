@@ -30,6 +30,12 @@ header {
 			}
 		}
 	}
+
+	.fa-bars {
+		font-size: 20px;
+		color: #333;
+		display: none;
+	}
 }
 
 header.main {
@@ -50,6 +56,21 @@ header.main {
 			a {
 				color: #fff;
 			}
+		}
+	}
+
+	.fa-bars {
+		color: #fff;
+	}
+}
+
+@media screen and (max-width: $tablet) {
+	header {
+		#gnb {
+			display: none;
+		}
+		.fa-bars {
+			display: block;
 		}
 	}
 }
