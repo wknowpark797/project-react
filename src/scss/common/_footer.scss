@@ -1,0 +1,20 @@
+footer {
+	width: 100%;
+	padding: 50px 100px;
+	background: #fff;
+	border-top: 1px solid #ddd;
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: space-between;
+	align-items: center;
+
+	h1 {
+		font: bold 24px/1 'arial';
+		color: #777;
+	}
+	p {
+		font: 12px/1 'arial';
+		color: #999;
+		letter-spacing: 1px;
+	}
+}
