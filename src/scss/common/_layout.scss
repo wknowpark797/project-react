@@ -42,3 +42,45 @@
 		transform: translateY(0);
 	}
 }
+
+@media screen and (max-width: $tablet) {
+	.content {
+		figure {
+			height: 150px;
+		}
+
+		> .inner {
+			padding: 70px 10vw;
+
+			h1 {
+				font: normal 50px/1 'work sans';
+
+				&::before {
+					width: 60px;
+					margin-bottom: 15px;
+				}
+			}
+		}
+	}
+}
+
+@media screen and (max-width: $mobile) {
+	.content {
+		figure {
+			display: none;
+		}
+
+		> .inner {
+			padding: 50px 10vw;
+
+			h1 {
+				font: normal 30px/1 'work sans';
+
+				&::before {
+					width: 30px;
+					margin-bottom: 10px;
+				}
+			}
+		}
+	}
+}
