@@ -2,9 +2,9 @@ import { Link, NavLink } from 'react-router-dom';
 
 function Header() {
 	const activeClass = 'on';
-	const activeStyle = {
-		color: 'lightblue',
-	};
+	// const activeStyle = {
+	// 	color: 'lightblue',
+	// };
 
 	return (
 		<header>
@@ -39,7 +39,7 @@ function Header() {
 					</NavLink>
 				</li>
 				<li>
-					<NavLink to='/member' activeStyle={activeStyle}>
+					<NavLink to='/member' activeClassName={activeClass}>
 						member
 					</NavLink>
 				</li>
