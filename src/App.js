@@ -19,6 +19,9 @@ import Gallery from './components/sub/Gallery';
 import Member from './components/sub/Member';
 import Youtube from './components/sub/Youtube';
 
+// style
+import './scss/style.scss';
+
 function App() {
 	return (
 		<>
