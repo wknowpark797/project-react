@@ -12,6 +12,7 @@ function Youtube() {
 		const num = 10;
 		const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${list}&key=${key}&maxResults=${num}`;
 
+		// TODO: async await로 변환 (useEffect 밖에서 함수생성 후 호출)
 		axios.get(url).then((data) => {
 			setVideoList(data.data.items);
 		});
