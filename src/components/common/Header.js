@@ -1,13 +1,13 @@
 import { Link, NavLink } from 'react-router-dom';
 
-function Header() {
+function Header({ type }) {
 	const activeClass = 'on';
 	// const activeStyle = {
 	// 	color: 'lightblue',
 	// };
 
 	return (
-		<header>
+		<header className={type}>
 			<h1>
 				<Link to='/'>LOGO</Link>
 			</h1>
