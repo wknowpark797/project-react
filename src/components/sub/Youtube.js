@@ -22,10 +22,10 @@ function Youtube() {
 			{VideoList.map((video, idx) => {
 				return (
 					<article key={idx}>
-						<img src={video.snippet.thumbnails.standard.url} alt={video.snippet.resourceId.videoId} />
-						<h2>{video.snippet.title}</h2>
-						<p>{video.snippet.description}</p>
-						<span>{video.snippet.publishedAt}</span>
+						<img src={video.snippet.thumbnails.standard.url} alt={video.snippet.title} />
+						<h2>{video.snippet.title.length > 50 ? video.snippet.title.substr(0, 50) + '...' : video.snippet.title}</h2>
+						<p>{video.snippet.description.length > 200 ? video.snippet.description.substr(0, 200) + '...' : video.snippet.description}</p>
+						<span>{video.snippet.publishedAt.split('T')[0].split('-').join('.')}</span>
 					</article>
 				);
 			})}
