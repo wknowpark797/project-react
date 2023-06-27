@@ -1,8 +1,16 @@
 // 공통 서브 페이지
 
+import { useEffect, useRef } from 'react';
+
 function Layout({ name, children }) {
+	const frame = useRef(null);
+
+	useEffect(() => {
+		frame.current.classList.add('on');
+	}, []);
+
 	return (
-		<section className={`content ${name}`}>
+		<section ref={frame} className={`content ${name}`}>
 			<figure></figure>
 
 			<div className='inner'>
