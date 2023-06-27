@@ -4,9 +4,11 @@ import { faBars } from '@fortawesome/free-solid-svg-icons';
 
 function Header({ type }) {
 	const activeClass = 'on';
-	// const activeStyle = {
-	// 	color: 'lightblue',
-	// };
+	/*
+		const activeStyle = {
+			color: 'lightblue',
+		};
+	*/
 
 	return (
 		<header className={type}>

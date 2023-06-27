@@ -16,7 +16,7 @@ function Layout({ name, children }) {
 			<div className='inner'>
 				<h1>{name}</h1>
 
-				{/* children - 호출하는 요소에 자식요소 전달 */}
+				{/* children - 호출하는 요소에서 자식요소 전달 */}
 				{children}
 			</div>
 		</section>
