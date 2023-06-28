@@ -8,6 +8,8 @@ function Youtube() {
 	const [VideoList, setVideoList] = useState([]);
 	console.log(VideoList);
 
+	const [SelectIdx, setSelectIdx] = useState(0);
+
 	useEffect(() => {
 		const key = 'AIzaSyDwb_57BfoNHLxlZ-Mwn2O3VNVt2tFNNMw';
 		const list = 'PLEJLcTMBRARd4AKwM7CM_0gf2mKviNR3J';
@@ -34,7 +36,9 @@ function Youtube() {
 							<div
 								className='pic'
 								onClick={() => {
+									console.log(modal);
 									modal.current.open();
+									setSelectIdx(idx); // 썸네일 클릭시 클릭한 요소의 index로 모달 출력
 								}}
 							>
 								<img src={video.snippet.thumbnails.standard.url} alt={video.snippet.title} />
@@ -44,7 +48,12 @@ function Youtube() {
 				})}
 			</Layout>
 
-			<Modal ref={modal} />
+			<Modal ref={modal}>
+				{/* 두번째 렌더링부터 데이터가 담기게 된다. (첫번째 렌더링은 초기값) */}
+				{/* 첫번째 렌더링에서 VideoList는 빈객체이므로 에러 발생 */}
+				{/* 옵셔널 체이닝: 첫번째 렌더링에서 객체에 값이 없을 때 에러 없이 무시하게끔 처리해준다. */}
+				<iframe title={VideoList[SelectIdx]?.id} src={`https://www.youtube.com/embed/${VideoList[SelectIdx]?.snippet.resourceId.videoId}`}></iframe>
+			</Modal>
 		</>
 	);
 }
