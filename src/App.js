@@ -4,13 +4,6 @@ import { Route, Switch } from 'react-router-dom';
 import Footer from './components/common/Footer';
 import Header from './components/common/Header';
 
-// main
-import Visual from './components/main/Visual';
-import News from './components/main/News';
-import Pics from './components/main/Pics';
-import Vids from './components/main/Vids';
-import Banner from './components/main/Banner';
-
 // sub
 import Community from './components/sub/Community';
 import Contact from './components/sub/Contact';
@@ -28,39 +21,21 @@ function App() {
 		<>
 			{/* Switch는 내부에 중복되는 라우트 경로가 있을 때 먼저 작성된 라우터를 채택하고 나머지는 무시 */}
 			<Switch>
-				<Route exact path='/'>
-					<Main />
-				</Route>
-
-				<Route path='/'>
-					{/* 서브 전용 라우터 Header */}
-					<Header type={'sub'} />
-				</Route>
+				<Route exact path='/' component={Main} />
+				{/* 컴포넌트 Props가 있을 경우 축양형 */}
+				<Route path='/' render={() => <Header type={'sub'} />} />
 			</Switch>
 
-			<Route path='/department'>
+			<Route path='/department' component={Department} />
+			{/* <Route path='/department'>
 				<Department />
-			</Route>
+			</Route> */}
 
-			<Route path='/community'>
-				<Community />
-			</Route>
-
-			<Route path='/gallery'>
-				<Gallery />
-			</Route>
-
-			<Route path='/youtube'>
-				<Youtube />
-			</Route>
-
-			<Route path='/contact'>
-				<Contact />
-			</Route>
-
-			<Route path='/member'>
-				<Member />
-			</Route>
+			<Route path='/community' component={Community} />
+			<Route path='/gallery' component={Gallery} />
+			<Route path='/youtube' component={Youtube} />
+			<Route path='/contact' component={Contact} />
+			<Route path='/member' component={Member} />
 
 			<Footer />
 		</>
