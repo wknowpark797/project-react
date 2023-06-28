@@ -1,19 +1,24 @@
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 function Btns() {
 	const btnRef = useRef(null);
 
 	// offset값을 초기화 시키지 않기 위한 처리
-	let pos = useRef([]);
+	const pos = useRef([]);
+
+	const [Num, setNum] = useState(0);
 
 	// myScroll 공통 클래스가 있는 section을 찾아 세로 위치값을 참조객체에 배열로 저장하는 함수
 	const getPos = () => {
 		pos.current = [];
 		const sections = btnRef.current.parentElement.querySelectorAll('.myScroll');
+
 		for (const section of sections) {
 			pos.current.push(section.offsetTop);
 		}
 		console.log(pos.current);
+
+		setNum(pos.current.length);
 	};
 
 	useEffect(() => {
@@ -33,11 +38,12 @@ function Btns() {
 
 	return (
 		<ul ref={btnRef} className='btnNavi'>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
-			<li></li>
+			{/* Main의 section 개수만큼 버튼 동적 생성 */}
+			{Array(Num)
+				.fill()
+				.map((_, idx) => {
+					return <li key={idx}></li>;
+				})}
 		</ul>
 	);
 }
