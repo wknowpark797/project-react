@@ -43,9 +43,13 @@ function Btns() {
 			{Array(Num)
 				.fill()
 				.map((_, idx) => {
+					let defaultClass = '';
+					if (idx === 0) defaultClass = 'on';
+
 					return (
 						<li
 							key={idx}
+							className={defaultClass}
 							onClick={() => {
 								new Anime(window, {
 									prop: 'scroll',
