@@ -10,17 +10,18 @@ function Youtube() {
 
 	const [SelectIdx, setSelectIdx] = useState(0);
 
-	useEffect(() => {
+	const fetchYoutube = async () => {
 		const key = 'AIzaSyDwb_57BfoNHLxlZ-Mwn2O3VNVt2tFNNMw';
 		const list = 'PLEJLcTMBRARd4AKwM7CM_0gf2mKviNR3J';
 		const num = 10;
 		const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${list}&key=${key}&maxResults=${num}`;
 
-		// TODO: async await로 변환 (useEffect 밖에서 함수생성 후 호출)
-		axios.get(url).then((data) => {
-			setVideoList(data.data.items);
-		});
-	}, []);
+		// async await로 변환 (useEffect 밖에서 함수생성 후 호출)
+		const result = await axios.get(url);
+		setVideoList(result.data.data.items);
+	};
+
+	useEffect(() => fetchYoutube(), []);
 
 	return (
 		<>
