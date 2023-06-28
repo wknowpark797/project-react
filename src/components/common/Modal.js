@@ -25,7 +25,7 @@ const Modal = forwardRef((props, ref) => {
 export default Modal;
 
 /*
-  useRef로 참조객체 연결은 JSX는 가능하나 사용자가 직접 만든 컴포넌트는 불가능
+  useRef로 참조객체를 연결할 때 JSX는 가능하지만 사용자가 직접 만든 컴포넌트는 불가능
   => 해결방법
     - 참조하려고 하는 컴포넌트 내부에서 forwardRef를 사용하여 자기자신을 참조객체에 연결하여 부모에게 역으로 전달처리
 

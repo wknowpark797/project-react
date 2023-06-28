@@ -22,10 +22,12 @@ function App() {
 			{/* Switch는 내부에 중복되는 라우트 경로가 있을 때 먼저 작성된 라우터를 채택하고 나머지는 무시 */}
 			<Switch>
 				<Route exact path='/' component={Main} />
-				{/* 컴포넌트 Props가 있을 경우 축양형 */}
+
+				{/* 컴포넌트에 props 전달이 있을 경우의 축약형 */}
 				<Route path='/' render={() => <Header type={'sub'} />} />
 			</Switch>
 
+			{/* 기본 축약형 */}
 			<Route path='/department' component={Department} />
 			{/* <Route path='/department'>
 				<Department />
