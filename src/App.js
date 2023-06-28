@@ -21,6 +21,7 @@ import Youtube from './components/sub/Youtube';
 
 // style
 import './scss/style.scss';
+import Main from './components/main/Main';
 
 function App() {
 	return (
@@ -28,14 +29,7 @@ function App() {
 			{/* Switch는 내부에 중복되는 라우트 경로가 있을 때 먼저 작성된 라우터를 채택하고 나머지는 무시 */}
 			<Switch>
 				<Route exact path='/'>
-					{/* 메인 전용 라우터 Header */}
-					<Header type={'main'} />
-
-					<Visual />
-					<News />
-					<Pics />
-					<Vids />
-					<Banner />
+					<Main />
 				</Route>
 
 				<Route path='/'>
