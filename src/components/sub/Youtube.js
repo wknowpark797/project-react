@@ -18,7 +18,7 @@ function Youtube() {
 
 		// async await로 변환 (useEffect 밖에서 함수생성 후 호출)
 		const result = await axios.get(url);
-		setVideoList(result.data.data.items);
+		setVideoList(result.data.items);
 	};
 
 	useEffect(() => fetchYoutube(), []);
