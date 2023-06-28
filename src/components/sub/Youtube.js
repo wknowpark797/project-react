@@ -1,9 +1,10 @@
 import Layout from '../common/Layout';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Modal from '../common/Modal';
 
 function Youtube() {
+	const modal = useRef(null);
 	const [VideoList, setVideoList] = useState([]);
 	console.log(VideoList);
 
@@ -30,7 +31,12 @@ function Youtube() {
 								<p>{video.snippet.description.length > 200 ? video.snippet.description.substr(0, 200) + '...' : video.snippet.description}</p>
 								<span>{video.snippet.publishedAt.split('T')[0].split('-').join('.')}</span>
 							</div>
-							<div className='pic'>
+							<div
+								className='pic'
+								onClick={() => {
+									modal.current.open();
+								}}
+							>
 								<img src={video.snippet.thumbnails.standard.url} alt={video.snippet.title} />
 							</div>
 						</article>
@@ -38,7 +44,7 @@ function Youtube() {
 				})}
 			</Layout>
 
-			<Modal />
+			<Modal ref={modal} />
 		</>
 	);
 }
