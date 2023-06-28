@@ -1,2 +1,28 @@
 .Youtube {
+	> .inner {
+		article {
+			border-top: 1px solid #ddd;
+			padding: 20px 0;
+			display: flex;
+			flex-wrap: wrap;
+			justify-content: space-between;
+
+			h2 {
+				width: 25%;
+			}
+			.txt {
+				width: 38%;
+			}
+			.pic {
+				width: 35%;
+				height: 15vw;
+
+				img {
+					width: 100%;
+					height: 100%;
+					object-fit: cover;
+				}
+			}
+		}
+	}
 }
