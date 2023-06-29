@@ -9,7 +9,9 @@ import { useState } from 'react';
 
 function Main() {
 	/*
-		부모요소에 state와 state변경 함수를 만들고 값을 전달해야 하는 자식 컴포넌트에는 state변경 함수를, 값을 받아야 하는 자식 컴포넌트에는 state값을 prop으로 전달
+		부모요소에 state와 state변경 함수를 만들기
+		- 값을 전달해야 하는 자식 컴포넌트에는 state변경 함수를 prop으로 전달
+		- 값을 받아야 하는 자식 컴포넌트에는 state값을 prop으로 전달
 	*/
 	const [Scrolled, setScrolled] = useState(0); // 현재 스크롤 위치
 	const [Pos, setPos] = useState([]); // 각 section의 offsetTop값
@@ -17,11 +19,10 @@ function Main() {
 	return (
 		<main>
 			{/* 메인 전용 라우터 Header */}
-			<Header type={'main'}></Header>
+			<Header type={'main'} />
+
 			<Visual />
 			<News />
-
-			{/* Pics 컴포넌트 활성화 순간부터 Scrolled값을 Pics의 제목 스타일과 연동 */}
 			<Pics Scrolled={Scrolled} Pos={Pos[2]} />
 			<Vids />
 			<Banner />
