@@ -1,10 +1,11 @@
 import Layout from '../common/Layout';
-import { useEffect, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 function Contact() {
 	// CDN으로 가져온 Kakao객체는 window에 등록된다.
 	// window 객체에서 직접 Kakao 상위 객체값을 가져와야 한다.
 	const { kakao } = window;
+	const [Traffic, setTraffic] = useState(false);
 
 	// 지도가 들어갈 프레임은 가상요소 참조를 위해 useRef로 참조 객체를 생성
 	const mapContainer = useRef(null);
@@ -30,11 +31,14 @@ function Contact() {
 			image: markerImage,
 		});
 		marker.setMap(mapInstance);
-	}, []);
+
+		Traffic ? mapInstance.addOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC) : mapInstance.removeOverlayMapTypeId(kakao.maps.MapTypeId.TRAFFIC);
+	}, [Traffic]);
 
 	return (
 		<Layout name={'Contact'}>
 			<div ref={mapContainer} id='map'></div>
+			<button onClick={() => setTraffic(!Traffic)}>{Traffic ? 'Traffic ON' : 'Traffic OFF'}</button>
 		</Layout>
 	);
 }
