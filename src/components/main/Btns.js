@@ -20,13 +20,18 @@ function Btns() {
 	};
 
 	const activation = () => {
+		const base = -window.innerHeight / 2;
 		const scroll = window.scrollY;
 		const btns = btnRef.current.children;
+		const boxs = btnRef.current.parentElement.querySelectorAll('.myScroll');
 
 		pos.current.forEach((pos, idx) => {
-			if (scroll >= pos) {
+			if (scroll >= pos + base) {
 				for (const btn of btns) btn.classList.remove('on');
 				btns[idx].classList.add('on');
+
+				for (const box of boxs) box.classList.remove('on');
+				boxs[idx].classList.add('on');
 			}
 		});
 	};
