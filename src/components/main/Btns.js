@@ -44,6 +44,9 @@ function Btns() {
 		*/
 		window.addEventListener('resize', getPos);
 		window.addEventListener('scroll', activation);
+		// 리액트는 SPA이므로 페이지 변경시 스크롤값이 초기화 되지 않는다.
+		// -> 컴포넌트를 mount할 때마다 매번 스크롤값을 초기화 해야 한다.
+		window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 
 		// 클리너 함수
 		return () => {
@@ -56,6 +59,7 @@ function Btns() {
 			*/
 			window.removeEventListener('resize', getPos);
 			window.removeEventListener('scroll', activation);
+			window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 		};
 	}, []);
 
