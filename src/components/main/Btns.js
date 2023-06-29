@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Anime from '../../asset/anime';
 
-function Btns() {
+function Btns({ setScrolled, setPos }) {
 	const btnRef = useRef(null);
 	const pos = useRef([]); // offset값이 초기화되지 않도록 처리
 	const [Num, setNum] = useState(0);
@@ -17,6 +17,7 @@ function Btns() {
 		console.log(pos.current);
 
 		setNum(pos.current.length);
+		setPos(pos.current);
 	};
 
 	const activation = () => {
@@ -24,6 +25,7 @@ function Btns() {
 		const scroll = window.scrollY;
 		const btns = btnRef.current.children;
 		const boxs = btnRef.current.parentElement.querySelectorAll('.myScroll');
+		setScrolled(scroll);
 
 		pos.current.forEach((pos, idx) => {
 			if (scroll >= pos + base) {
