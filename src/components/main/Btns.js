@@ -19,6 +19,18 @@ function Btns() {
 		setNum(pos.current.length);
 	};
 
+	const activation = () => {
+		const scroll = window.scrollY;
+		const btns = btnRef.current.children;
+
+		pos.current.forEach((pos, idx) => {
+			if (scroll >= pos) {
+				for (const btn of btns) btn.classList.remove('on');
+				btns[idx].classList.add('on');
+			}
+		});
+	};
+
 	useEffect(() => {
 		getPos();
 		/*
@@ -26,7 +38,9 @@ function Btns() {
 			window 객체는 리액트가 제어할 수 없는 최상위 요소
 		*/
 		window.addEventListener('resize', getPos);
+		window.addEventListener('scroll', activation);
 
+		// 클리너 함수
 		return () => {
 			/*
 				[ window 객체 이벤트 소멸 ]
@@ -36,6 +50,7 @@ function Btns() {
 				핸들러 함수를 제거하기 위해서는 해당 함수가 외부 함수로 선언되어 있어야 한다.
 			*/
 			window.removeEventListener('resize', getPos);
+			window.removeEventListener('scroll', activation);
 		};
 	}, []);
 
