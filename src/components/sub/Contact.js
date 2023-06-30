@@ -1,4 +1,5 @@
 import Layout from '../common/Layout';
+import ContactForm from './ContactForm';
 import { useState, useEffect, useRef } from 'react';
 
 function Contact() {
@@ -97,6 +98,8 @@ function Contact() {
 					);
 				})}
 			</ul>
+
+			<ContactForm />
 		</Layout>
 	);
 }
