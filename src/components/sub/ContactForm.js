@@ -3,10 +3,10 @@ import emailjs from '@emailjs/browser';
 
 function ContactForm() {
 	const form = useRef(null);
-	const [Success, setSuccess] = useState(false);
 	const inputName = useRef(null);
 	const inputEmail = useRef(null);
 	const inputMessage = useRef(null);
+	const [Success, setSuccess] = useState(false);
 
 	const serviceId = 'service_9gz6979';
 	const templateId = 'template_p22mw5k';

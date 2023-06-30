@@ -3,6 +3,8 @@ import ContactForm from './ContactForm';
 import { useState, useEffect, useRef } from 'react';
 
 function Contact() {
+	// 지도가 들어갈 프레임은 가상요소 참조를 위해 useRef로 참조 객체를 생성
+	const mapContainer = useRef(null);
 	const [Traffic, setTraffic] = useState(false);
 	const [Location, setLocation] = useState(null);
 	const [Index, setIndex] = useState(0);
@@ -12,7 +14,6 @@ function Contact() {
 		-> CDN으로 가져온 Kakao객체는 window에 등록
 	*/
 	const { kakao } = window;
-
 	const info = [
 		{
 			title: '삼성역 코엑스',
@@ -37,12 +38,12 @@ function Contact() {
 		},
 	];
 
-	// 지도가 들어갈 프레임은 가상요소 참조를 위해 useRef로 참조 객체를 생성
-	const mapContainer = useRef(null);
 	const mapOption = { center: info[Index].latlng, level: 3 };
 
-	// Marker 생성하기
-	// 아래 다섯개의 변수값들은 useEffect문에서 인스턴스 생성할때만 필요한 정보값이므로 미리 읽히도록 useEffect바깥에 배치
+	/*
+		[ Marker 생성하기 ]
+		아래 다섯개의 변수값들은 useEffect문에서 인스턴스 생성할때만 필요한 정보값이므로 미리 읽히도록 useEffect바깥에 배치
+	*/
 	const imageSrc = info[Index].imgSrc;
 	const imageSize = info[Index].imgSize;
 	const imageOption = info[Index].imgPos;
@@ -58,8 +59,10 @@ function Contact() {
 	useEffect(() => {
 		mapContainer.current.innerHTML = ''; // 지도 초기화
 
-		// 기본지도 생성
-		// 인스턴스 호출 구문은 컴포넌트를 처음 마운트시 호출 (DOM이 완성된 후 Map 연결)
+		/*
+			[ 기본지도 생성 ]
+			인스턴스 호출 구문은 컴포넌트를 처음 마운트시 호출 (DOM이 완성된 후 Map 연결)
+		*/
 		const mapInstance = new kakao.maps.Map(mapContainer.current, mapOption);
 
 		marker.setMap(mapInstance);
@@ -70,7 +73,7 @@ function Contact() {
 		// 지역변수인 mapInstance값을 다른 함수에서도 활용하기 위해서 Location state에 해당 인스턴스 값 저장
 		setLocation(mapInstance);
 
-		// setCenter가 호출될 때 내부적으로 Index state값에 의존하고 있기 때문에 useEffect 안쪽에서 setCenter를 정의하고 호출해야 한다.
+		// setCenter가 호출될 때 내부적으로 Index state값에 의존하고 있기 때문에 useEffect 안쪽에서 setCenter를 정의하고 호출한다.
 		const setCenter = () => {
 			mapInstance.setCenter(info[Index].latlng);
 		};
