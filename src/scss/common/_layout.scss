@@ -6,7 +6,9 @@
 		height: 300px;
 		background: gray;
 		opacity: 0;
-		transition: 1s 0.3s;
+		transition-property: opacity, transform;
+		transition-duration: 1s;
+		transition-delay: 0.3s;
 	}
 
 	> .inner {
