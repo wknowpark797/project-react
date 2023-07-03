@@ -10,6 +10,7 @@ function Member() {
 		gender: false,
 		interests: false,
 		edu: '',
+		comments: '',
 	};
 	const [Val, setVal] = useState(initVal);
 	const [Err, setErr] = useState({});
@@ -70,6 +71,9 @@ function Member() {
 		}
 		if (value.edu === '') {
 			errors.edu = '최종학력을 선택하세요';
+		}
+		if (value.comments.length < 10) {
+			errors.comments = '남기는 말을 최소 10글자 이상 입력하세요.';
 		}
 
 		return errors;
@@ -193,6 +197,19 @@ function Member() {
 
 									<br />
 									{Err.edu && <p>{Err.edu}</p>}
+								</td>
+							</tr>
+
+							{/* comments */}
+							<tr>
+								<th>
+									<label htmlFor='comments'>Leave Message</label>
+								</th>
+								<td>
+									<textarea name='comments' id='comments' cols='30' rows='3' value={Val.comments} onChange={handleChange}></textarea>
+
+									<br />
+									{Err.comments && <p>{Err.comments}</p>}
 								</td>
 							</tr>
 
