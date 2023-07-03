@@ -42,6 +42,18 @@
 					padding: 6px 10px;
 					background: #eff8f8;
 				}
+
+				input[type='radio'],
+				input[type='checkbox'] {
+					margin-right: 20px;
+					margin-left: 5px;
+				}
+
+				p {
+					font: 11px/1 '돋움';
+					color: hotpink;
+					margin-top: 10px;
+				}
 			}
 		}
 	}
