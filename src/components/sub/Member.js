@@ -1,7 +1,10 @@
 import Layout from '../common/Layout';
 import { useState, useEffect } from 'react';
+import { useHistory } from 'react-router-dom';
 
 function Member() {
+	const history = useHistory();
+
 	const initVal = {
 		userid: '',
 		pwd1: '',
@@ -92,11 +95,15 @@ function Member() {
 		// 객체의 키값을 배열로 반환한 다음 해당 배열의 개수를 저장
 		// length값이 0이라면 Err객체에 에러 메세지가 없으므로 인증통과 처리
 		const len = Object.keys(Err).length;
-		if (len === 0 && Submit) alert('모든 인증을 통과하였습니다.');
+		if (len === 0 && Submit) {
+			alert('모든 인증을 통과하였습니다.');
+			history.push('/');
+		}
 	}, [Err]);
 
 	return (
 		<Layout name={'Member'}>
+			<button onClick={() => history.goBack()}>뒤로가기</button>
 			<form onSubmit={handleSubmit}>
 				<fieldset>
 					<legend className='h'>회원가입 Form 양식</legend>
@@ -187,7 +194,7 @@ function Member() {
 									<label htmlFor='edu'>EDUCATION</label>
 								</th>
 								<td>
-									<select name='edu' id='ede' onChange={handleSelect}>
+									<select name='edu' id='edu' onChange={handleSelect}>
 										<option value=''>최종학력을 선택하세요.</option>
 										<option value='elementary-school'>초등학교 졸업</option>
 										<option value='middle-school'>중학교 졸업</option>
