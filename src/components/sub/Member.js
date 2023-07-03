@@ -9,6 +9,7 @@ function Member() {
 		email: '',
 		gender: false,
 		interests: false,
+		edu: '',
 	};
 	const [Val, setVal] = useState(initVal);
 	const [Err, setErr] = useState({});
@@ -36,6 +37,11 @@ function Member() {
 		setVal({ ...Val, [name]: isChecked });
 	};
 
+	const handleSelect = (e) => {
+		const { name, value } = e.target;
+		setVal({ ...Val, [name]: value });
+	};
+
 	const check = (value) => {
 		// 인수로 현재 Val state값을 전달받아 항목별로 에러 메시지를 객체로 반환하는 함수
 		// 반환되는 에러 메세지가 있으면 인증실패 반환되는 에러 메세지가 없으면 인증성공
@@ -61,6 +67,9 @@ function Member() {
 		}
 		if (!value.interests) {
 			errors.interests = '관심사를 하나이상 선택하세요.';
+		}
+		if (value.edu === '') {
+			errors.edu = '최종학력을 선택하세요';
 		}
 
 		return errors;
@@ -165,6 +174,25 @@ function Member() {
 
 									<br />
 									{Err.interests && <p>{Err.interests}</p>}
+								</td>
+							</tr>
+
+							{/* education */}
+							<tr>
+								<th>
+									<label htmlFor='edu'>EDUCATION</label>
+								</th>
+								<td>
+									<select name='edu' id='ede' onChange={handleSelect}>
+										<option value=''>최종학력을 선택하세요.</option>
+										<option value='elementary-school'>초등학교 졸업</option>
+										<option value='middle-school'>중학교 졸업</option>
+										<option value='high-school'>고등학교 졸업</option>
+										<option value='college'>대학교 졸업</option>
+									</select>
+
+									<br />
+									{Err.edu && <p>{Err.edu}</p>}
 								</td>
 							</tr>
 
