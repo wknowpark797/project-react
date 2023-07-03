@@ -73,6 +73,9 @@ function Contact() {
 		// 지역변수인 mapInstance값을 다른 함수에서도 활용하기 위해서 Location state에 해당 인스턴스 값 저장
 		setLocation(mapInstance);
 
+		// 지도 휠 기능 비활성화
+		mapInstance.setZoomable(false);
+
 		// setCenter가 호출될 때 내부적으로 Index state값에 의존하고 있기 때문에 useEffect 안쪽에서 setCenter를 정의하고 호출한다.
 		const setCenter = () => {
 			mapInstance.setCenter(info[Index].latlng);
