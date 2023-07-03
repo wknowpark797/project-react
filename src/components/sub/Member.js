@@ -22,7 +22,8 @@ function Member() {
 	const handleChange = (e) => {
 		// 현재 입력하고 있는 input 요소의 name, value 값을 비구조화할당으로 뽑아서 출력
 		const { name, value } = e.target;
-		// 기존의 초기의 Val state값을 deep copy하여 현재 입력하고 있는 항목의 name값과 value값으로 기존 state를 덮어쓰기 하여 변경 (불변성 유지)
+
+		// 초기의 Val값을 deep copy하여 현재 입력하고 있는 항목의 name값과 value값으로 기존 state를 덮어쓰기 하여 변경 (불변성 유지)
 		setVal({ ...Val, [name]: value });
 	};
 
@@ -46,9 +47,18 @@ function Member() {
 		setVal({ ...Val, [name]: value });
 	};
 
+	const handleSubmit = (e) => {
+		e.preventDefault();
+		console.log('현재 state값: ', Val);
+		// check함수에서 반환하는 메세지가 있으면 해당 메세지를 화면에 출력하고 전송중지, 반환하는 메세지가 없으면 인증성공
+		console.log(check(Val));
+		setErr(check(Val));
+		setSubmit(true);
+	};
+
 	const check = (value) => {
-		// 인수로 현재 Val state값을 전달받아 항목별로 에러 메시지를 객체로 반환하는 함수
-		// 반환되는 에러 메세지가 있으면 인증실패 반환되는 에러 메세지가 없으면 인증성공
+		// 인수로 현재 Val값을 전달받아 항목별로 에러 메시지를 객체로 반환하는 함수
+		// 반환되는 에러 메세지가 있으면 인증실패, 반환되는 에러 메세지가 없으면 인증성공
 		const errors = {};
 		const eng = /[a-zA-Z]/;
 		const num = /[0-9]/;
@@ -80,15 +90,6 @@ function Member() {
 		}
 
 		return errors;
-	};
-
-	const handleSubmit = (e) => {
-		e.preventDefault();
-		console.log('현재 state값: ', Val);
-		// check 함수가 반환하는 메세지가 있으면 해당 메세지를 화면에 출력하고 전송중지 반환하는 메세지가 없으면 인증성공
-		console.log(check(Val));
-		setErr(check(Val));
-		setSubmit(true);
 	};
 
 	useEffect(() => {
