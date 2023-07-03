@@ -95,19 +95,19 @@ function Member() {
 									<label htmlFor='userid'>USER ID</label>
 								</th>
 								<td>
-									<input type='text' name='userid' id='userid' placeholder='아이디를 입력하세요.' onChange={handleChange} />
+									<input type='text' name='userid' id='userid' placeholder='아이디를 입력하세요.' onChange={handleChange} value={Val.userid} />
 									<br />
 									{Err.userid && <p>{Err.userid}</p>}
 								</td>
 							</tr>
 
-							{/* re password */}
+							{/* password */}
 							<tr>
 								<th>
 									<label htmlFor='pwd1'>PASSWORD</label>
 								</th>
 								<td>
-									<input type='password' name='pwd1' id='pwd1' placeholder='비밀번호를 입력하세요.' onChange={handleChange} />
+									<input type='password' name='pwd1' id='pwd1' placeholder='비밀번호를 입력하세요.' onChange={handleChange} value={Val.pwd1} />
 									<br />
 									{Err.pwd1 && <p>{Err.pwd1}</p>}
 								</td>
@@ -117,7 +117,7 @@ function Member() {
 									<label htmlFor='pwd2'>RE-PASSWORD</label>
 								</th>
 								<td>
-									<input type='password' name='pwd2' id='pwd2' placeholder='비밀번호를 재입력하세요.' onChange={handleChange} />
+									<input type='password' name='pwd2' id='pwd2' placeholder='비밀번호를 재입력하세요.' onChange={handleChange} value={Val.pwd2} />
 									<br />
 									{Err.pwd2 && <p>{Err.pwd2}</p>}
 								</td>
@@ -129,7 +129,7 @@ function Member() {
 									<label htmlFor='email'>EMAIL</label>
 								</th>
 								<td>
-									<input type='text' name='email' id='email' placeholder='이메일 주소를 입력하세요.' onChange={handleChange} />
+									<input type='text' name='email' id='email' placeholder='이메일 주소를 입력하세요.' onChange={handleChange} value={Val.email} />
 									<br />
 									{Err.email && <p>{Err.email}</p>}
 								</td>
@@ -171,7 +171,7 @@ function Member() {
 							{/* btn set */}
 							<tr>
 								<th colSpan='2'>
-									<input type='reset' value='CANCEL' />
+									<input type='reset' value='RESET' onClick={() => setVal(initVal)} />
 									<input type='submit' value='SEND' />
 								</th>
 							</tr>
