@@ -21,6 +21,11 @@ function Community() {
 		resetForm();
 	};
 
+	const deletePost = (index) => {
+		// filter 자체가 불변성을 유지하기 때문에 복사과정이 필요없다.
+		setPosts(Posts.filter((_, idx) => idx !== index));
+	};
+
 	useEffect(() => {
 		console.log(Posts);
 	}, [Posts]);
@@ -47,7 +52,7 @@ function Community() {
 
 							<nav className='btnSet'>
 								<button>edit</button>
-								<button>delete</button>
+								<button onClick={() => deletePost(idx)}>delete</button>
 							</nav>
 						</article>
 					);
