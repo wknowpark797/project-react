@@ -22,6 +22,7 @@ function Community() {
 	};
 
 	const deletePost = (index) => {
+		if (!window.confirm('해당 게시물을 삭제하시겠습니까?')) return;
 		// filter 자체가 불변성을 유지하기 때문에 복사과정이 필요없다.
 		setPosts(Posts.filter((_, idx) => idx !== index));
 	};
@@ -39,20 +40,24 @@ function Community() {
 				<textarea cols='30' rows='3' placeholder='본문을 입력하세요.' ref={textarea}></textarea>
 				<br />
 
-				<button>cancel</button>
-				<button onClick={createPost}>write</button>
+				<nav className='btnSet'>
+					<button onClick={resetForm}>cancel</button>
+					<button onClick={createPost}>write</button>
+				</nav>
 			</div>
 
 			<div className='show-box'>
 				{Posts.map((post, idx) => {
 					return (
 						<article key={idx}>
-							<h2>{post.title}</h2>
-							<p>{post.content}</p>
+							<div className='txt'>
+								<h2>{post.title}</h2>
+								<p>{post.content}</p>
+							</div>
 
 							<nav className='btnSet'>
-								<button>edit</button>
-								<button onClick={() => deletePost(idx)}>delete</button>
+								<button>EDIT</button>
+								<button onClick={() => deletePost(idx)}>DELETE</button>
 							</nav>
 						</article>
 					);
