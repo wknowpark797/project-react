@@ -61,3 +61,45 @@
 		}
 	}
 }
+
+@media screen and (max-width: $tablet) {
+	.Member {
+		> .inner {
+			table {
+				th {
+					display: none;
+					padding: 15px 0;
+
+					&:last-child {
+						display: flex;
+						width: 100%;
+						justify-content: space-between;
+
+						input[type='submit'],
+						input[type='reset'] {
+							display: inline-block;
+							width: 48%;
+							margin: 0;
+						}
+					}
+				}
+				td {
+					border-left: none;
+					padding: 15px 0;
+
+					input[type='text'],
+					input[type='password'],
+					select,
+					textarea {
+						width: 100%;
+					}
+
+					input[type='radio'],
+					input[type='checkbox'] {
+						margin-right: 10px;
+					}
+				}
+			}
+		}
+	}
+}

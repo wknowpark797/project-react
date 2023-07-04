@@ -5,6 +5,7 @@ import { useHistory } from 'react-router-dom';
 function Member() {
 	const history = useHistory();
 
+	// TODO: initVal값이 인증을 위한 값이 아닌 데이터베이스에 전달되는 값이 담기도록 수정
 	const initVal = {
 		userid: '',
 		pwd1: '',
