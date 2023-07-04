@@ -21,6 +21,8 @@ function Community() {
 			resetForm();
 			return alert('제목과 본문을 모두 입력하세요.');
 		}
+
+		// 최신 게시물부터 노출되도록 복사 순서 변경
 		setPosts([{ title: input.current.value, content: textarea.current.value }, ...Posts]);
 		resetForm();
 	};
@@ -31,10 +33,12 @@ function Community() {
 		setPosts(Posts.filter((_, idx) => idx !== index));
 	};
 
+	// 수정모드 진입 함수
 	const enableUpdate = (index) => {
-		// 수정모드 진입함수 호출 시 Allowed가 true일 때에만 로직이 실행되도록 처리
+		// Allowed가 true일 때에만 로직이 실행되도록 처리
 		if (!Allowed) return;
-		// 로직이 실행되면 allowed값을 false로 바꿔서 이후부터는 다시 수정모드로 진입되는 것을 방지
+
+		// 로직 실행시 Allowed값을 false로 바꿔서 다른 게시물에서 수정모드로 진입하는 것을 방지
 		setAllowed(false);
 		setPosts(
 			Posts.map((post, idx) => {
@@ -51,7 +55,7 @@ function Community() {
 				return post;
 			})
 		);
-		// 글 수정 취소버튼을 눌러서 disableUpdate 함수가 호출이 되어야 Allowed값을 다시 true로 바꿔 글 수정이 가능하도록 처리
+		// Allowed값을 다시 true로 바꿔 수정모드로 진입이 가능하도록 처리
 		setAllowed(true);
 	};
 
@@ -81,7 +85,7 @@ function Community() {
 	return (
 		<Layout name={'Community'}>
 			<div className='input-box'>
-				{/* form 태그와 name 태그 사용X */}
+				{/* form 태그와 name 속성 사용X */}
 				<input type='text' placeholder='제목을 입력하세요.' ref={input} />
 				<br />
 				<textarea cols='30' rows='3' placeholder='본문을 입력하세요.' ref={textarea}></textarea>
@@ -101,8 +105,11 @@ function Community() {
 								// 수정 모드
 								<>
 									<div className='txt'>
-										{/* onChange 이벤트로 제어하지 않는 input 요소의 value 값은 defaultValue 속성으로 지정 */}
-										{/* value: 리액트의 상태값에 관리되는 Form 요소, defaultValue: 일반 DOM에 의해 관리되는 Form 요소 */}
+										{/* 
+											[ onChange 이벤트로 제어하지 않는 input 요소의 value 값은 defaultValue 속성으로 지정 ]
+											- value: 리액트의 상태값에 관리되는 Form 요소
+											- defaultValue: 일반 DOM에 의해 관리되는 Form 요소
+										*/}
 										<input type='text' defaultValue={post.title} ref={editInput} />
 										<br />
 										<textarea cols='30' rows='3' defaultValue={post.content} ref={editTextarea}></textarea>
