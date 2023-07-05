@@ -15,7 +15,7 @@ function News() {
 		else return dummy;
 	};
 
-	const [Posts] = useState(getLocalData);
+	const [Posts] = useState(getLocalData());
 
 	useEffect(() => {
 		localStorage.setItem('post', JSON.stringify(Posts));

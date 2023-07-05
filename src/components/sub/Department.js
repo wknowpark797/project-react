@@ -13,7 +13,7 @@ function Department() {
 	}, []);
 
 	return (
-		// prop으로 자식요소에 줄바꿈될 텍스트를 전달하고 싶을 때 줄바꿈될 부분에 구분자가 될 문자값을 포함하여 전달
+		// prop으로 자식요소에 줄바꿈 텍스트를 전달하고 싶을 때 구분자가 될 문자값을 포함하여 전달
 		<Layout name={'Department'} txt={'Hello-World'}>
 			{Members.map((member, idx) => {
 				return (

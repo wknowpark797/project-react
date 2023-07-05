@@ -2,9 +2,11 @@ import Layout from '../common/Layout';
 import { useState, useEffect, useRef } from 'react';
 
 function Community() {
-	// 로컬 저장소의 데이터를 반환하는 함수 정의
-	// 저장소에 값이 있으면 해당 값을 다시 JSON 형태로 변경하여 반환
-	// 값이 없다면 빈 배열을 반환
+	/*
+		[ 로컬 저장소의 데이터를 반환하는 함수 ]
+		- 저장소에 값이 있다면 해당 값을 다시 JSON 형태로 변경하여 반환
+		- 저장소에 값이 없다면 빈 배열을 반환
+	*/
 	const getLocalData = () => {
 		const data = localStorage.getItem('post');
 		return JSON.parse(data);
@@ -15,7 +17,7 @@ function Community() {
 	const editInput = useRef(null);
 	const editTextarea = useRef(null);
 
-	// getLocalData 함수의 리턴값으로 Posts state 초기화
+	// getLocalData함수의 리턴값으로 Posts state 초기화
 	const [Posts, setPosts] = useState(getLocalData);
 	const [Allowed, setAllowed] = useState(true);
 
@@ -90,7 +92,7 @@ function Community() {
 	};
 
 	useEffect(() => {
-		// Posts state값이 변경될때마다 해당 데이터를 문자화하여 localStorage에 저장
+		// Posts state값이 변경될 때마다 해당 데이터를 문자화하여 localStorage에 저장
 		localStorage.setItem('post', JSON.stringify(Posts));
 	}, [Posts]);
 
@@ -171,16 +173,13 @@ export default Community;
 	- Read: 데이터 호출 (게시글 보기)
 	- Update: 데이터 수정 (게시글 수정)
 	- Delete: 데이터 삭제 (게시글 삭제)
-
-	[ Restful API ]
-
-	localStorage: 모든 브라우저마다 가지고 있는 경량의 데이터 베이스 (문자값만 저장 가능)
 */
 
 /*
 	[ Local Storage ]
+	- 모든 브라우저마다 가지고 있는 경량의 데이터 베이스
 	- 각 브라우저마다 가지고 있는 로컬 저장공간
-	- 문자값만 저장가능 (문자값이 아닌 데이터는 강제로 문자화시켜 저장해야 한다. JSON)
+	- 문자값만 저장가능 (문자값이 아닌 데이터는 강제로 문자화하여 저장)
 	- 5MB 저장 가능
 	- localStorage.setItem('key', '저장할 문자값');
 		-> 값 저장
