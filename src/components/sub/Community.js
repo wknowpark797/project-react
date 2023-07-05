@@ -76,7 +76,14 @@ function Community() {
 				return post;
 			})
 		);
+
+		setAllowed(true);
 	};
+
+	useEffect(() => {
+		// 기능 동작 에러 추적
+		console.log(Allowed);
+	}, [Allowed]);
 
 	useEffect(() => {
 		console.log(Posts);
