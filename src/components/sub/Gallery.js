@@ -12,7 +12,7 @@ function Gallery() {
 		const method_interest = 'flickr.interestingness.getList';
 		const method_search = 'flickr.photos.search';
 		const method_user = 'flickr.people.getPhotos';
-		const num = 20;
+		const num = 30;
 		// const myId = '198471371@N05';
 		let url = '';
 
@@ -26,9 +26,9 @@ function Gallery() {
 	};
 
 	useEffect(() => {
-		getFlickr({ type: 'interest' });
+		// getFlickr({ type: 'interest' });
 		// getFlickr({ type: 'search', tags: 'landscape' });
-		// getFlickr({ type: 'user', user: '198471371@N05' });
+		getFlickr({ type: 'user', user: '198471371@N05' });
 	}, []);
 
 	return (
@@ -43,6 +43,16 @@ function Gallery() {
 										<img src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`} alt='{item.title}' />
 									</div>
 									<h2>{item.title}</h2>
+									<div className='profile'>
+										<img
+											src={`http://farm${item.farm}.staticflickr.com/${item.server}/buddyicons/${item.owner}.jpg`}
+											alt={`${item.owner}`}
+											onError={(e) => {
+												e.target.setAttribute('src', 'https://www.flickr.com/images/buddyicon.gif');
+											}}
+										/>
+										<span>{`${item.owner}`}</span>
+									</div>
 								</div>
 							</article>
 						);
