@@ -4,18 +4,16 @@ import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
 
 function Gallery() {
-	const isUser = useRef(true);
+	const isUser = useRef(true); // user 데이터 재호출 방지
 	const searchInput = useRef(null);
 	const btnSet = useRef(null);
-	const enableEvent = useRef(true);
+	const enableEvent = useRef(true); // 재이벤트 방지
 	const frame = useRef(null);
 	const [Items, setItems] = useState([]);
 	const [Loader, setLoader] = useState(true);
 
 	const getFlickr = async (opt) => {
-		// 새롭게 Data Fetching이 실행될 때 참조객체에 담겨있는 카운터 값을 다시 0으로 초기화
-		// useRef로 참조한 값은 컴포넌트가 재실행되더라도 일반 변수처럼 초기화되는 것이 아니기 때문에 직접 초기화 해야한다.
-		// => getFlickr 함수가 재실행될 때마다 counter값을 초기화 해야하므로 useRef가 아닌 일반 지역변수로 변경
+		// 함수가 재실행될 때마다 counter값을 초기화
 		let counter = 0;
 
 		const baseURL = 'https://www.flickr.com/services/rest/?format=json&nojsoncallback=1';
@@ -24,7 +22,6 @@ function Gallery() {
 		const method_search = 'flickr.photos.search';
 		const method_user = 'flickr.people.getPhotos';
 		const num = 50;
-		// const myId = '198471371@N05';
 		let url = '';
 
 		if (opt.type === 'interest') url = `${baseURL}&api_key=${key}&method=${method_interest}&per_page=${num}`;
@@ -35,38 +32,43 @@ function Gallery() {
 		if (result.data.photos.photo.length === 0) {
 			setLoader(false);
 			frame.current.classList.add('on');
+
 			const btnMine = btnSet.current.children;
 			btnMine[1].classList.add('on');
+
 			getFlickr({ type: 'user', user: '198471371@N05' });
 			enableEvent.current = true;
 
 			return alert('이미지 결과값이 없습니다.');
 		}
-		console.log(result.data.photos.photo);
+
 		setItems(result.data.photos.photo);
 
-		// 외부 데이터가 state에 담기고 DOM이 생성되는 순간
-		// 모든 img요소를 찾아서 반복처리
+		/*
+			1. 외부 데이터가 state에 담기고 DOM이 생성되는 순간 모든 img 요소를 찾아서 반복처리
+			2. img요소에 load이벤트가 발생할 때(소스 이미지까지 로딩이 완료될때마다) 내부적으로 counter값을 1씩 증가
+			3. 로딩 완료된 이미지수와 전체 이미지수가 같아지면 로더를 제거 후 이미지 갤러리 보임 처리
+		*/
 		const imgs = frame.current.querySelectorAll('img');
 		imgs.forEach((img) => {
-			// img요소에 load이벤트가 발생할 때 (소스 이미지까지 로딩이 완료될 때마다)
 			img.onload = () => {
-				// 내부적으로 카운터값을 1씩 증가
 				++counter;
 				console.log(counter);
 
-				// 로딩 완료된 이미지수와 전체 이미지수가 같아지면
 				// TODO: 문제점 - 결과값의 개수가 적게 리턴되는 문제 발생 (해결필요)
 				if (counter === imgs.length - 2) {
-					// 로더를 제거 후 이미지 갤러리 보임 처리
 					setLoader(false);
 					frame.current.classList.add('on');
-
-					// 모션 중 재이벤트 방지시 모션이 끝날때까지 이벤트를 방지해도 모션이 끝나는 순간에도 이벤트가 많이 발생하면 특정값이 바뀌는 순간보다 이벤트가 더 빨리 들어가 오류 발생 -> 해결방법: 물리적으로 이벤트 호출을 지연시켜서 마지막에 발생한 이벤트만 동작처리 (debouncing)
-					// 단시간에 많이 발생하는 이벤트시 함수 호출을 줄이는 방법
-					// 1. Debouncing: 이벤트 발생시 바로 호출하는것이 아닌 일정시간 시간을 두고 마지막에 발생한 이벤트만 호출
-					// 2. throttling: 이벤트 발생시 호출되는 함수 자체를 적게 호출
 					enableEvent.current = true;
+
+					/*
+						모션 진행중 재이벤트 방지시 모션이 끝날때까지 이벤트를 방지해도 모션이 끝나는 순간 이벤트가 많이 발생하면 특정값이 바뀌는 순간보다 이벤트가 더 빨리 들어가 오류가 발생할 경우
+						-> 해결방법: 물리적으로 이벤트 호출을 지연시켜 마지막에 발생한 이벤트만 동작처리 (Debouncing)
+						
+						[ 단시간에 많이 발생하는 이벤트의 함수 호출을 줄이는 방법 ]
+						1. Debouncing: 이벤트 발생시 바로 호출하는 것이 아닌 일정시간 시간을 두고 마지막에 발생한 이벤트만 호출
+						2. throttling: 이벤트 발생시 호출되는 함수를 줄인다.
+					*/
 				}
 			};
 		});
@@ -75,18 +77,21 @@ function Gallery() {
 	// 기존 갤러리 초기화 함수
 	const resetGallery = (e) => {
 		const btns = btnSet.current.querySelectorAll('button');
+
 		btns.forEach((btn) => btn.classList.remove('on'));
 		e.target.classList.add('on');
+
 		enableEvent.current = false;
 		setLoader(true);
 		frame.current.classList.remove('on');
 	};
 
 	const showInterest = (e) => {
+		// 모션 진행중 재이벤트 방지
 		if (!enableEvent.current) return;
 		if (e.target.classList.contains('on')) return;
 
-		resetGallery(e);
+		resetGallery(e); // 기존 갤러리 초기화
 
 		getFlickr({ type: 'interest' });
 		isUser.current = false;
@@ -107,16 +112,13 @@ function Gallery() {
 		if (!enableEvent.current) return;
 
 		resetGallery(e);
+
 		getFlickr({ type: 'search', tags: tag });
 		searchInput.current.value = '';
 		isUser.current = false;
 	};
 
-	useEffect(() => {
-		// getFlickr({ type: 'interest' });
-		// getFlickr({ type: 'search', tags: 'landscape' });
-		getFlickr({ type: 'user', user: '198471371@N05' });
-	}, []);
+	useEffect(() => getFlickr({ type: 'user', user: '198471371@N05' }), []);
 
 	return (
 		<Layout name={'Gallery'}>
