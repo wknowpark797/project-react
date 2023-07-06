@@ -1,10 +1,13 @@
 import Layout from '../common/Layout';
 import Masonry from 'react-masonry-component';
 import axios from 'axios';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 
 function Gallery() {
+	const frame = useRef(null);
+	const counter = useRef(0);
 	const [Items, setItems] = useState([]);
+	const [Loader, setLoader] = useState(true);
 
 	const getFlickr = async (opt) => {
 		const baseURL = 'https://www.flickr.com/services/rest/?format=json&nojsoncallback=1';
@@ -12,7 +15,7 @@ function Gallery() {
 		const method_interest = 'flickr.interestingness.getList';
 		const method_search = 'flickr.photos.search';
 		const method_user = 'flickr.people.getPhotos';
-		const num = 30;
+		const num = 50;
 		// const myId = '198471371@N05';
 		let url = '';
 
@@ -23,17 +26,36 @@ function Gallery() {
 		const result = await axios.get(url);
 		console.log(result.data.photos.photo);
 		setItems(result.data.photos.photo);
+
+		// 외부 데이터가 state에 담기고 DOM이 생성되는 순간
+		// 모든 img요소를 찾아서 반복처리
+		const imgs = frame.current.querySelectorAll('img');
+		imgs.forEach((img) => {
+			// img요소에 load이벤트가 발생할 때 (소스 이미지까지 로딩이 완료될 때마다)
+			img.onload = () => {
+				// 내부적으로 카운터값을 1씩 증가
+				++counter.current;
+				console.log(counter);
+
+				// 로딩 완료된 이미지수와 전체 이미지수가 같아지면
+				if (counter.current === num * 2) {
+					// 로더를 제거 후 이미지 갤러리 보임 처리
+					setLoader(false);
+					frame.current.classList.add('on');
+				}
+			};
+		});
 	};
 
 	useEffect(() => {
-		// getFlickr({ type: 'interest' });
+		getFlickr({ type: 'interest' });
 		// getFlickr({ type: 'search', tags: 'landscape' });
-		getFlickr({ type: 'user', user: '198471371@N05' });
+		// getFlickr({ type: 'user', user: '198471371@N05' });
 	}, []);
 
 	return (
 		<Layout name={'Gallery'}>
-			<div className='frame'>
+			<div className='frame' ref={frame}>
 				<Masonry elementType={'div'} options={{ transitionDuration: '0.5s' }}>
 					{Items.map((item, idx) => {
 						return (
@@ -59,6 +81,8 @@ function Gallery() {
 					})}
 				</Masonry>
 			</div>
+
+			{Loader && <img className='loader' src={`${process.env.PUBLIC_URL}/img/loading.gif`} alt='loader' />}
 		</Layout>
 	);
 }
