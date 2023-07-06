@@ -4,12 +4,20 @@ import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
 
 function Gallery() {
+	const isUser = useRef(true);
+	const searchInput = useRef(null);
+	const btnSet = useRef(null);
+	const enableEvent = useRef(true);
 	const frame = useRef(null);
-	const counter = useRef(0);
 	const [Items, setItems] = useState([]);
 	const [Loader, setLoader] = useState(true);
 
 	const getFlickr = async (opt) => {
+		// 새롭게 Data Fetching이 실행될 때 참조객체에 담겨있는 카운터 값을 다시 0으로 초기화
+		// useRef로 참조한 값은 컴포넌트가 재실행되더라도 일반 변수처럼 초기화되는 것이 아니기 때문에 직접 초기화 해야한다.
+		// => getFlickr 함수가 재실행될 때마다 counter값을 초기화 해야하므로 useRef가 아닌 일반 지역변수로 변경
+		let counter = 0;
+
 		const baseURL = 'https://www.flickr.com/services/rest/?format=json&nojsoncallback=1';
 		const key = '7f259a4112d06fbef0736c84af20f014';
 		const method_interest = 'flickr.interestingness.getList';
@@ -24,6 +32,16 @@ function Gallery() {
 		if (opt.type === 'user') url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
 
 		const result = await axios.get(url);
+		if (result.data.photos.photo.length === 0) {
+			setLoader(false);
+			frame.current.classList.add('on');
+			const btnMine = btnSet.current.children;
+			btnMine[1].classList.add('on');
+			getFlickr({ type: 'user', user: '198471371@N05' });
+			enableEvent.current = true;
+
+			return alert('이미지 결과값이 없습니다.');
+		}
 		console.log(result.data.photos.photo);
 		setItems(result.data.photos.photo);
 
@@ -34,27 +52,86 @@ function Gallery() {
 			// img요소에 load이벤트가 발생할 때 (소스 이미지까지 로딩이 완료될 때마다)
 			img.onload = () => {
 				// 내부적으로 카운터값을 1씩 증가
-				++counter.current;
+				++counter;
 				console.log(counter);
 
 				// 로딩 완료된 이미지수와 전체 이미지수가 같아지면
-				if (counter.current === num * 2) {
+				// TODO: 문제점 - 결과값의 개수가 적게 리턴되는 문제 발생 (해결필요)
+				if (counter === imgs.length - 2) {
 					// 로더를 제거 후 이미지 갤러리 보임 처리
 					setLoader(false);
 					frame.current.classList.add('on');
+
+					// 모션 중 재이벤트 방지시 모션이 끝날때까지 이벤트를 방지해도 모션이 끝나는 순간에도 이벤트가 많이 발생하면 특정값이 바뀌는 순간보다 이벤트가 더 빨리 들어가 오류 발생 -> 해결방법: 물리적으로 이벤트 호출을 지연시켜서 마지막에 발생한 이벤트만 동작처리 (debouncing)
+					// 단시간에 많이 발생하는 이벤트시 함수 호출을 줄이는 방법
+					// 1. Debouncing: 이벤트 발생시 바로 호출하는것이 아닌 일정시간 시간을 두고 마지막에 발생한 이벤트만 호출
+					// 2. throttling: 이벤트 발생시 호출되는 함수 자체를 적게 호출
+					enableEvent.current = true;
 				}
 			};
 		});
 	};
 
-	useEffect(() => {
+	// 기존 갤러리 초기화 함수
+	const resetGallery = (e) => {
+		const btns = btnSet.current.querySelectorAll('button');
+		btns.forEach((btn) => btn.classList.remove('on'));
+		e.target.classList.add('on');
+		enableEvent.current = false;
+		setLoader(true);
+		frame.current.classList.remove('on');
+	};
+
+	const showInterest = (e) => {
+		if (!enableEvent.current) return;
+		if (e.target.classList.contains('on')) return;
+
+		resetGallery(e);
+
 		getFlickr({ type: 'interest' });
+		isUser.current = false;
+	};
+
+	const showMine = (e) => {
+		if (!enableEvent.current) return;
+		if (e.target.classList.contains('on')) return;
+
+		resetGallery(e);
+
+		getFlickr({ type: 'user', user: '198471371@N05' });
+	};
+
+	const showSearch = (e) => {
+		const tag = searchInput.current.value.trim();
+		if (tag === '') return alert('검색어를 입력하세요.');
+		if (!enableEvent.current) return;
+
+		resetGallery(e);
+		getFlickr({ type: 'search', tags: tag });
+		searchInput.current.value = '';
+		isUser.current = false;
+	};
+
+	useEffect(() => {
+		// getFlickr({ type: 'interest' });
 		// getFlickr({ type: 'search', tags: 'landscape' });
-		// getFlickr({ type: 'user', user: '198471371@N05' });
+		getFlickr({ type: 'user', user: '198471371@N05' });
 	}, []);
 
 	return (
 		<Layout name={'Gallery'}>
+			<div className='btnSet' ref={btnSet}>
+				<button onClick={showInterest}>Interest Gallery</button>
+				<button className='on' onClick={showMine}>
+					My Gallery
+				</button>
+			</div>
+
+			<div className='search-box'>
+				<input type='text' placeholder='검색어를 입력하세요.' ref={searchInput} onKeyPress={(e) => e.key === 'Enter' && showSearch(e)} />
+				<button onClick={showSearch}>Search</button>
+			</div>
+
 			<div className='frame' ref={frame}>
 				<Masonry elementType={'div'} options={{ transitionDuration: '0.5s' }}>
 					{Items.map((item, idx) => {
@@ -73,7 +150,17 @@ function Gallery() {
 												e.target.setAttribute('src', 'https://www.flickr.com/images/buddyicon.gif');
 											}}
 										/>
-										<span>{item.owner}</span>
+										<span
+											onClick={(e) => {
+												if (isUser.current) return;
+												isUser.current = true;
+												setLoader(true);
+												frame.current.classList.remove('on');
+												getFlickr({ type: 'user', user: e.target.innerText });
+											}}
+										>
+											{item.owner}
+										</span>
 									</div>
 								</div>
 							</article>
