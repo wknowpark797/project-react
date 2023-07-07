@@ -29,10 +29,8 @@ function Gallery() {
 		let url = '';
 
 		if (opt.type === 'interest') url = `${baseURL}&api_key=${key}&method=${method_interest}&per_page=${num}`;
-		if (opt.type === 'search')
-			url = `${baseURL}&api_key=${key}&method=${method_search}&per_page=${num}&tags=${opt.tags}`;
-		if (opt.type === 'user')
-			url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
+		if (opt.type === 'search') url = `${baseURL}&api_key=${key}&method=${method_search}&per_page=${num}&tags=${opt.tags}`;
+		if (opt.type === 'user') url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
 
 		const result = await axios.get(url);
 		if (result.data.photos.photo.length === 0) {
@@ -62,10 +60,14 @@ function Gallery() {
 				++counter;
 				console.log(counter);
 
-				// 문제점 - 결과값의 개수가 적게 리턴되는 문제 발생 (해결필요)
-				// 이슈 해결: 특정 사용자 아이디로 갤러리를 출력할 때 counter 개수가 2가 부족한 이유
-				// 이벤트 발생시점에 출력될 이미지 DOM 요소중에서 이미 해당 사용자의 이미지와 프로필의 이미지 소스 2개가 캐싱이 완료되었기 때문에 실제 생성된 imgDOM의 개수는 20개이지만, 2개 소스 이미지의 캐싱이 완료되었기 때문에 onload 이벤트는 18번만 발생
-				// 캐싱된 이미지는 onload 이벤트를 타지 않는다.
+				/*
+					[ 결과값의 개수가 적게 리턴되는 문제 발생 ]
+					특정 사용자 아이디로 갤러리를 출력할 때 counter개수가 2개 부족한 이유
+
+					- 이벤트 발생시점에 출력될 이미지 DOM요소 중에서 이미 해당 사용자의 이미지와 프로필 이미지 소스 2개가 캐싱이 완료
+					- 따라서 실제 생성된 이미지 DOM의 개수는 20개이지만 캐싱이 완료된 2개의 소스 이미지 때문에 onload 이벤트는 18번만 발생
+					- 캐싱된 이미지는 onload 이벤트를 타지 않는다.
+				*/
 				if (counter === imgs.length - 2) {
 					setLoader(false);
 					frame.current.classList.add('on');
@@ -141,12 +143,7 @@ function Gallery() {
 				</div>
 
 				<div className='search-box'>
-					<input
-						type='text'
-						placeholder='검색어를 입력하세요.'
-						ref={searchInput}
-						onKeyPress={(e) => e.key === 'Enter' && showSearch(e)}
-					/>
+					<input type='text' placeholder='검색어를 입력하세요.' ref={searchInput} onKeyPress={(e) => e.key === 'Enter' && showSearch(e)} />
 					<button onClick={showSearch}>Search</button>
 				</div>
 
@@ -159,14 +156,11 @@ function Gallery() {
 										<div
 											className='pic'
 											onClick={() => {
-												modal.current.open();
+												modal.current?.open();
 												setModalIndex(idx);
 											}}
 										>
-											<img
-												src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`}
-												alt={item.title}
-											/>
+											<img src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`} alt={item.title} />
 										</div>
 										<h2>{item.title}</h2>
 										<div className='profile'>
@@ -201,10 +195,7 @@ function Gallery() {
 
 			<Modal ref={modal}>
 				{/* 첫번째 렌더링 사이클 이후에 적용되도록 처리 - 체이닝 적용 */}
-				<img
-					src={`https://live.staticflickr.com/${Items[ModalIndex]?.server}/${Items[ModalIndex]?.id}_${Items[ModalIndex]?.secret}_b.jpg`}
-					alt={Items[ModalIndex]?.title}
-				/>
+				<img src={`https://live.staticflickr.com/${Items[ModalIndex]?.server}/${Items[ModalIndex]?.id}_${Items[ModalIndex]?.secret}_b.jpg`} alt={Items[ModalIndex]?.title} />
 			</Modal>
 		</>
 	);

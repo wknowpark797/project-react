@@ -1,7 +1,5 @@
 import { forwardRef, useState, useEffect, useImperativeHandle } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-// 직접 커스텀 모션 적용시 unmount할 때 모션동작이 불가능하다.
-// unmount할 때 모션이 끝날때까지 홀딩시켜 모션동작이 가능하도록 해준다. -> framer-motion 사용
 
 const Modal = forwardRef((props, ref) => {
 	const [Open, setOpen] = useState(false);
@@ -20,19 +18,34 @@ const Modal = forwardRef((props, ref) => {
 
 	// ref 매개체에 modal(자기자신)을 담아 부모에게 보낸다.
 	return (
-		// 컴포넌트 unmount할 때 모션효과가 끝날때까지 unmount를 자동 지연시켜준다.
+		/*
+			[ Framer Motion ]
+			모션을 직접 커스텀하여 작업하면 unmount할 때 모션동작이 불가능하다.
+			-> framer motion을 적용하면 컴포넌트가 unmount할 때 모션효과가 끝날때까지 unmount를 자동으로 지연시켜준다.
+
+			[ 사용방법 ]
+			1. 모션을 걸고 싶은 태그에 motion. 지정
+			2. 속성 지정
+				- initial (모션 시작)
+				- animate (모션 완료)
+				- exit (모션 사라짐)
+			3. 각 속성에 값 지정
+				- x (가로축)
+				- y (세로축)
+				- rotate (회전)
+				- scale (확대, 축소)
+
+			[ 주의할 점 ]
+			- AnimatePresence 사용시 내부 컴포넌트에 연결되어 있는 ref값을 제거해야 한다.
+			- React 17버전에서 framer-motion은 6버전대로 설치
+		*/
 		<AnimatePresence>
 			{Open && (
-				// 모션은 걸고 싶은 컴포넌트에 motion. 지정
-				// initial(모션 시작) / animate (모션완료) / exit (모션 사라짐) 속성 지정
-				// x(가로축) / y(세로축) / rotate(회전) / scale(확대축소)
-				// 주의점 : AnimatePresence 사용시 내부 컴포넌트에 연결되어 있는 ref 값을 제거해야 한다.
-				// 설치버전 : 리액트 17버전 에서는 6버전대로 설치 (최신버전은 7버전 이상 - 리액트 18)
 				<motion.aside
 					className='modal'
 					initial={{ opacity: 0, x: '100%' }}
 					animate={{ opacity: 1, x: '0', transition: { duration: 0.5 } }}
-					exit={{ opacity: 0, scale: 0, transition: { duration: 0.5 } }}
+					exit={{ opacity: 0, scale: 0, transition: { duration: 0.5, delay: 0.5 } }}
 				>
 					<motion.div
 						className='con'

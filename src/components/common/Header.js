@@ -5,14 +5,13 @@ import Menu from './Menu';
 import { useRef } from 'react';
 
 function Header({ type }) {
+	const menu = useRef(null);
 	const activeClass = 'on';
 	/*
 		const activeStyle = {
 			color: 'lightblue',
 		};
 	*/
-
-	const menu = useRef(null);
 
 	return (
 		<>
