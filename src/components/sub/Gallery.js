@@ -21,7 +21,7 @@ function Gallery() {
 		const method_interest = 'flickr.interestingness.getList';
 		const method_search = 'flickr.photos.search';
 		const method_user = 'flickr.people.getPhotos';
-		const num = 50;
+		const num = 10;
 		let url = '';
 
 		if (opt.type === 'interest') url = `${baseURL}&api_key=${key}&method=${method_interest}&per_page=${num}`;
@@ -50,12 +50,16 @@ function Gallery() {
 			3. 로딩 완료된 이미지수와 전체 이미지수가 같아지면 로더를 제거 후 이미지 갤러리 보임 처리
 		*/
 		const imgs = frame.current.querySelectorAll('img');
+		console.log('이미지 DOM 개수: ', imgs.length);
 		imgs.forEach((img) => {
 			img.onload = () => {
 				++counter;
 				console.log(counter);
 
-				// TODO: 문제점 - 결과값의 개수가 적게 리턴되는 문제 발생 (해결필요)
+				// 문제점 - 결과값의 개수가 적게 리턴되는 문제 발생 (해결필요)
+				// 이슈 해결: 특정 사용자 아이디로 갤러리를 출력할 때 counter 개수가 2가 부족한 이유
+				// 이벤트 발생시점에 출력될 이미지 DOM 요소중에서 이미 해당 사용자의 이미지와 프로필의 이미지 소스 2개가 캐싱이 완료되었기 때문에 실제 생성된 imgDOM의 개수는 20개이지만, 2개 소스 이미지의 캐싱이 완료되었기 때문에 onload 이벤트는 18번만 발생
+				// 캐싱된 이미지는 onload 이벤트를 타지 않는다.
 				if (counter === imgs.length - 2) {
 					setLoader(false);
 					frame.current.classList.add('on');
