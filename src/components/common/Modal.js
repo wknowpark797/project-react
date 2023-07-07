@@ -1,4 +1,4 @@
-import { forwardRef, useState, useImperativeHandle } from 'react';
+import { forwardRef, useState, useEffect, useImperativeHandle } from 'react';
 
 const Modal = forwardRef((props, ref) => {
 	const [Open, setOpen] = useState(false);
@@ -6,6 +6,14 @@ const Modal = forwardRef((props, ref) => {
 	useImperativeHandle(ref, () => {
 		return { open: () => setOpen(true) };
 	});
+
+	useEffect(() => {
+		if (Open) {
+			document.body.style.overflow = 'hidden';
+		} else {
+			document.body.style.overflow = 'auto';
+		}
+	}, [Open]);
 
 	// ref 매개체에 modal(자기자신)을 담아 부모에게 보낸다.
 	return (
