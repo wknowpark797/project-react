@@ -29,8 +29,10 @@ function Gallery() {
 		let url = '';
 
 		if (opt.type === 'interest') url = `${baseURL}&api_key=${key}&method=${method_interest}&per_page=${num}`;
-		if (opt.type === 'search') url = `${baseURL}&api_key=${key}&method=${method_search}&per_page=${num}&tags=${opt.tags}`;
-		if (opt.type === 'user') url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
+		if (opt.type === 'search')
+			url = `${baseURL}&api_key=${key}&method=${method_search}&per_page=${num}&tags=${opt.tags}`;
+		if (opt.type === 'user')
+			url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
 
 		const result = await axios.get(url);
 		if (result.data.photos.photo.length === 0) {
@@ -139,7 +141,12 @@ function Gallery() {
 				</div>
 
 				<div className='search-box'>
-					<input type='text' placeholder='검색어를 입력하세요.' ref={searchInput} onKeyPress={(e) => e.key === 'Enter' && showSearch(e)} />
+					<input
+						type='text'
+						placeholder='검색어를 입력하세요.'
+						ref={searchInput}
+						onKeyPress={(e) => e.key === 'Enter' && showSearch(e)}
+					/>
 					<button onClick={showSearch}>Search</button>
 				</div>
 
@@ -156,7 +163,10 @@ function Gallery() {
 												setModalIndex(idx);
 											}}
 										>
-											<img src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`} alt={item.title} />
+											<img
+												src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`}
+												alt={item.title}
+											/>
 										</div>
 										<h2>{item.title}</h2>
 										<div className='profile'>
@@ -191,7 +201,10 @@ function Gallery() {
 
 			<Modal ref={modal}>
 				{/* 첫번째 렌더링 사이클 이후에 적용되도록 처리 - 체이닝 적용 */}
-				<img src={`https://live.staticflickr.com/${Items[ModalIndex]?.server}/${Items[ModalIndex]?.id}_${Items[ModalIndex]?.secret}_b.jpg`} alt={Items[ModalIndex]?.title} />
+				<img
+					src={`https://live.staticflickr.com/${Items[ModalIndex]?.server}/${Items[ModalIndex]?.id}_${Items[ModalIndex]?.secret}_b.jpg`}
+					alt={Items[ModalIndex]?.title}
+				/>
 			</Modal>
 		</>
 	);
