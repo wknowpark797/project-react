@@ -1,12 +1,16 @@
 import Layout from '../common/Layout';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
 
 function Member() {
 	const history = useHistory();
 
 	// TODO: initVal값이 인증을 위한 값이 아닌 데이터베이스에 전달되는 값이 담기도록 수정
-	const initVal = {
+	// -> useMemo 처리 (리턴값 메모이제이션 처리)
+	// initVal의 값은 변경될 필요가 없는 초기값이지만 컴포넌트가 재호출 될때마다 계속해서 초기화되는 값이기 때문에 해당 값을 초기화하지 않고 메모이제이션 할 필요가 있다. (선택사항)
+	// 불필요한 useMemo를 사용하고 싶지 않으면 useRef를 사용하는것이 효과적 (메모리 점유 X)
+	// useRef로 사용시 해당 값이 컴포넌트가 재렌더링되더라도 값을 기억하기 때문 (정적인 정보값 활용)
+	const initVal = useRef({
 		userid: '',
 		pwd1: '',
 		pwd2: '',
@@ -15,8 +19,9 @@ function Member() {
 		interests: false,
 		edu: '',
 		comments: '',
-	};
-	const [Val, setVal] = useState(initVal);
+	});
+
+	const [Val, setVal] = useState(initVal.current);
 	const [Err, setErr] = useState({});
 	const [Submit, setSubmit] = useState(false);
 
@@ -101,7 +106,7 @@ function Member() {
 			alert('모든 인증을 통과하였습니다.');
 			history.push('/');
 		}
-	}, [Err]);
+	}, [Err, Submit, history]);
 
 	return (
 		<Layout name={'Member'}>
@@ -117,7 +122,14 @@ function Member() {
 									<label htmlFor='userid'>USER ID</label>
 								</th>
 								<td>
-									<input type='text' name='userid' id='userid' placeholder='아이디를 입력하세요.' onChange={handleChange} value={Val.userid} />
+									<input
+										type='text'
+										name='userid'
+										id='userid'
+										placeholder='아이디를 입력하세요.'
+										onChange={handleChange}
+										value={Val.userid}
+									/>
 									<br />
 									{Err.userid && <p>{Err.userid}</p>}
 								</td>
@@ -129,7 +141,14 @@ function Member() {
 									<label htmlFor='pwd1'>PASSWORD</label>
 								</th>
 								<td>
-									<input type='password' name='pwd1' id='pwd1' placeholder='비밀번호를 입력하세요.' onChange={handleChange} value={Val.pwd1} />
+									<input
+										type='password'
+										name='pwd1'
+										id='pwd1'
+										placeholder='비밀번호를 입력하세요.'
+										onChange={handleChange}
+										value={Val.pwd1}
+									/>
 									<br />
 									{Err.pwd1 && <p>{Err.pwd1}</p>}
 								</td>
@@ -139,7 +158,14 @@ function Member() {
 									<label htmlFor='pwd2'>RE-PASSWORD</label>
 								</th>
 								<td>
-									<input type='password' name='pwd2' id='pwd2' placeholder='비밀번호를 재입력하세요.' onChange={handleChange} value={Val.pwd2} />
+									<input
+										type='password'
+										name='pwd2'
+										id='pwd2'
+										placeholder='비밀번호를 재입력하세요.'
+										onChange={handleChange}
+										value={Val.pwd2}
+									/>
 									<br />
 									{Err.pwd2 && <p>{Err.pwd2}</p>}
 								</td>
@@ -151,7 +177,14 @@ function Member() {
 									<label htmlFor='email'>EMAIL</label>
 								</th>
 								<td>
-									<input type='text' name='email' id='email' placeholder='이메일 주소를 입력하세요.' onChange={handleChange} value={Val.email} />
+									<input
+										type='text'
+										name='email'
+										id='email'
+										placeholder='이메일 주소를 입력하세요.'
+										onChange={handleChange}
+										value={Val.email}
+									/>
 									<br />
 									{Err.email && <p>{Err.email}</p>}
 								</td>
@@ -215,7 +248,14 @@ function Member() {
 									<label htmlFor='comments'>Leave Message</label>
 								</th>
 								<td>
-									<textarea name='comments' id='comments' cols='30' rows='3' value={Val.comments} onChange={handleChange}></textarea>
+									<textarea
+										name='comments'
+										id='comments'
+										cols='30'
+										rows='3'
+										value={Val.comments}
+										onChange={handleChange}
+									></textarea>
 
 									<br />
 									{Err.comments && <p>{Err.comments}</p>}
@@ -225,7 +265,7 @@ function Member() {
 							{/* btn set */}
 							<tr>
 								<th colSpan='2'>
-									<input type='reset' value='RESET' onClick={() => setVal(initVal)} />
+									<input type='reset' value='RESET' onClick={() => setVal(initVal.current)} />
 									<input type='submit' value='SEND' />
 								</th>
 							</tr>
