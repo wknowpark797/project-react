@@ -1,8 +1,11 @@
 import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { memo } from 'react';
 
 function Header({ type, menu }) {
+	console.log('Header');
+
 	const activeClass = 'on';
 	/*
 		const activeStyle = {
@@ -61,4 +64,4 @@ function Header({ type, menu }) {
 	);
 }
 
-export default Header;
+export default memo(Header);

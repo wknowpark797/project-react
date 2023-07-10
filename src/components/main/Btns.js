@@ -1,13 +1,15 @@
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import Anime from '../../asset/anime';
 
 function Btns({ setScrolled, setPos }) {
+	console.log('Btns');
+
 	const btnRef = useRef(null);
 	const pos = useRef([]); // offset값이 초기화되지 않도록 처리
 	const [Num, setNum] = useState(0);
 
 	// myScroll 공통 클래스가 있는 section을 찾아 offset 위치값을 참조객체에 배열로 저장하는 함수
-	const getPos = () => {
+	const getPos = useCallback(() => {
 		pos.current = [];
 		const sections = btnRef.current.parentElement.querySelectorAll('.myScroll');
 
@@ -18,9 +20,9 @@ function Btns({ setScrolled, setPos }) {
 
 		setNum(pos.current.length);
 		setPos(pos.current);
-	};
+	}, [setPos]);
 
-	const activation = () => {
+	const activation = useCallback(() => {
 		const base = -window.innerHeight / 2;
 		const scroll = window.scrollY;
 		const btns = btnRef.current.children;
@@ -36,7 +38,7 @@ function Btns({ setScrolled, setPos }) {
 				boxs[idx].classList.add('on');
 			}
 		});
-	};
+	}, [setScrolled]);
 
 	useEffect(() => {
 		getPos();
@@ -66,7 +68,7 @@ function Btns({ setScrolled, setPos }) {
 			window.removeEventListener('scroll', activation);
 			window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 		};
-	}, []);
+	}, [getPos, activation]);
 	/*
 		[ ESLint 권고문구 ]
 		eslint가 의존성 배열에 activation, getPos 함수의 등록 권고문구를 띄우는 이유
@@ -107,4 +109,4 @@ function Btns({ setScrolled, setPos }) {
 	);
 }
 
-export default Btns;
+export default memo(Btns);

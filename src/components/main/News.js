@@ -1,6 +1,8 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, memo } from 'react';
 
 function News() {
+	console.log('News');
+
 	const dummy = [
 		{ title: 'Hello5', content: 'Hello5 description in detail.' },
 		{ title: 'Hello4', content: 'Hello4 description in detail.' },
@@ -37,4 +39,4 @@ function News() {
 	);
 }
 
-export default News;
+export default memo(News);
