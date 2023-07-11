@@ -2,7 +2,7 @@ import Layout from '../common/Layout';
 import Modal from '../common/Modal';
 import Masonry from 'react-masonry-component';
 import axios from 'axios';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 
 function Gallery() {
 	const isUser = useRef(true); // user 데이터 재호출 방지
@@ -16,7 +16,7 @@ function Gallery() {
 	const modal = useRef(null);
 	const [ModalIndex, setModalIndex] = useState(0);
 
-	const getFlickr = async (opt) => {
+	const getFlickr = useCallback(async (opt) => {
 		// 함수가 재실행될 때마다 counter값을 초기화
 		let counter = 0;
 
@@ -29,8 +29,10 @@ function Gallery() {
 		let url = '';
 
 		if (opt.type === 'interest') url = `${baseURL}&api_key=${key}&method=${method_interest}&per_page=${num}`;
-		if (opt.type === 'search') url = `${baseURL}&api_key=${key}&method=${method_search}&per_page=${num}&tags=${opt.tags}`;
-		if (opt.type === 'user') url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
+		if (opt.type === 'search')
+			url = `${baseURL}&api_key=${key}&method=${method_search}&per_page=${num}&tags=${opt.tags}`;
+		if (opt.type === 'user')
+			url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
 
 		const result = await axios.get(url);
 		if (result.data.photos.photo.length === 0) {
@@ -84,7 +86,7 @@ function Gallery() {
 				}
 			};
 		});
-	};
+	}, []);
 
 	// 기존 갤러리 초기화 함수
 	const resetGallery = (e) => {
@@ -130,7 +132,7 @@ function Gallery() {
 		isUser.current = false;
 	};
 
-	useEffect(() => getFlickr({ type: 'user', user: '198471371@N05' }), []);
+	useEffect(() => getFlickr({ type: 'user', user: '198471371@N05' }), [getFlickr]);
 
 	return (
 		<>
@@ -143,7 +145,12 @@ function Gallery() {
 				</div>
 
 				<div className='search-box'>
-					<input type='text' placeholder='검색어를 입력하세요.' ref={searchInput} onKeyPress={(e) => e.key === 'Enter' && showSearch(e)} />
+					<input
+						type='text'
+						placeholder='검색어를 입력하세요.'
+						ref={searchInput}
+						onKeyPress={(e) => e.key === 'Enter' && showSearch(e)}
+					/>
 					<button onClick={showSearch}>Search</button>
 				</div>
 
@@ -160,7 +167,10 @@ function Gallery() {
 												setModalIndex(idx);
 											}}
 										>
-											<img src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`} alt={item.title} />
+											<img
+												src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`}
+												alt={item.title}
+											/>
 										</div>
 										<h2>{item.title}</h2>
 										<div className='profile'>
@@ -195,7 +205,10 @@ function Gallery() {
 
 			<Modal ref={modal}>
 				{/* 첫번째 렌더링 사이클 이후에 적용되도록 처리 - 체이닝 적용 */}
-				<img src={`https://live.staticflickr.com/${Items[ModalIndex]?.server}/${Items[ModalIndex]?.id}_${Items[ModalIndex]?.secret}_b.jpg`} alt={Items[ModalIndex]?.title} />
+				<img
+					src={`https://live.staticflickr.com/${Items[ModalIndex]?.server}/${Items[ModalIndex]?.id}_${Items[ModalIndex]?.secret}_b.jpg`}
+					alt={Items[ModalIndex]?.title}
+				/>
 			</Modal>
 		</>
 	);
