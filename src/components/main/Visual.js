@@ -1,6 +1,9 @@
 import { memo } from 'react';
+import { useSelector } from 'react-redux';
 
 function Visual() {
+	useSelector((store) => console.log(store));
+
 	console.log('Visual');
 
 	return (
