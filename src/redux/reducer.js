@@ -1,6 +1,6 @@
 /* store의 데이터를 변경해주는 변형자 함수 */
 
-// combineReducers: 여러개의 객체 데이터를 하나의 객체로 합침
+// combineReducers: 여러개의 객체 데이터를 하나의 객체로 합쳐준다.
 import { combineReducers } from 'redux';
 
 const initMember = {
