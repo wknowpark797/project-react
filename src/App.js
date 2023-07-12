@@ -1,5 +1,5 @@
 import { Route, Switch } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { setYoutube } from './redux/action';
@@ -23,7 +23,7 @@ function App() {
 	const menu = useRef(null);
 	const dispatch = useDispatch();
 
-	const fetchYoutube = async () => {
+	const fetchYoutube = useCallback(async () => {
 		const key = 'AIzaSyA4f3SqOYivsLVITR7K6g5K0QrKhvUZ7hw';
 		const list = 'PLuYjs7JL1VFCBJV6rASuppjv0wuF4iTR7';
 		const num = 10;
@@ -34,11 +34,11 @@ function App() {
 
 		// setVideoList(result.data.items);
 		dispatch(setYoutube(result.data.items));
-	};
+	}, [dispatch]);
 
 	useEffect(() => {
 		fetchYoutube();
-	}, []);
+	}, [fetchYoutube]);
 
 	return (
 		<>
