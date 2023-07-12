@@ -2,11 +2,15 @@ import Layout from '../common/Layout';
 import axios from 'axios';
 import { useState, useEffect, useRef } from 'react';
 import Modal from '../common/Modal';
+import { useSelector, useDispatch } from 'react-redux';
+import { setYoutube } from '../../redux/action';
 
 function Youtube() {
 	const modal = useRef(null);
-	const [VideoList, setVideoList] = useState([]);
+
+	const VideoList = useSelector((store) => store.youtubeReducer.youtube);
 	console.log(VideoList);
+	const dispatch = useDispatch();
 
 	const [SelectIdx, setSelectIdx] = useState(0);
 
@@ -18,7 +22,9 @@ function Youtube() {
 
 		// async await로 변환 (useEffect 밖에서 함수생성 후 호출)
 		const result = await axios.get(url);
-		setVideoList(result.data.items);
+
+		// setVideoList(result.data.items);
+		dispatch(setYoutube(result.data.items));
 	};
 
 	useEffect(() => fetchYoutube(), []);
