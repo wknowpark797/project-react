@@ -74,9 +74,9 @@ function Gallery() {
 			2. img요소에 load이벤트가 발생할 때(소스 이미지까지 로딩이 완료될때마다) 내부적으로 counter값을 1씩 증가
 			3. 로딩 완료된 이미지수와 전체 이미지수가 같아지면 로더를 제거 후 이미지 갤러리 보임 처리
 		*/
-			const imgs = frame.current.querySelectorAll('img');
-			console.log('이미지 DOM 개수: ', imgs.length);
-			imgs.forEach((img) => {
+			const imgs = frame.current?.querySelectorAll('img');
+
+			imgs?.forEach((img) => {
 				img.onload = () => {
 					++counter;
 					console.log(counter);
