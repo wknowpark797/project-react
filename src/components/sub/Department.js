@@ -4,7 +4,7 @@ import { setMembers } from '../../redux/action';
 
 function Department() {
 	const Members = useSelector((store) => store.memberReducer.members);
-	const dispatch = useDispatch(); // 활성화 시킨 후 사용이 가능
+	const dispatch = useDispatch(); // useDispatch 활성화 후 사용가능
 
 	return (
 		// props로 자식요소에 줄바꿈 텍스트를 전달하고 싶을 때 구분자가 될 문자값을 포함하여 전달

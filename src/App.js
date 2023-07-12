@@ -23,6 +23,7 @@ function App() {
 	const menu = useRef(null);
 	const dispatch = useDispatch();
 
+	// 컴포넌트가 mount될 때 데이터 fetching 후 store에 저장
 	const fetchYoutube = useCallback(async () => {
 		const key = 'AIzaSyA4f3SqOYivsLVITR7K6g5K0QrKhvUZ7hw';
 		const list = 'PLuYjs7JL1VFCBJV6rASuppjv0wuF4iTR7';

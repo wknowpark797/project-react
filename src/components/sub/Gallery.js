@@ -5,15 +5,16 @@ import axios from 'axios';
 import { useState, useEffect, useRef, useCallback } from 'react';
 
 /*
-	[ 메모리 누수 에러 발생 ]
-	router로 컴포넌트를 빠르게 이동시 메모리 누수(memory leak) 에러가 발생하는 이유
-	- fetching 되는 데이터가 많아서 state에 해당 값을 담는데 시간이 오래 걸리는 경우
-	- 아직 state에 값이 모두 담기지 않았는데 컴포넌트 이동을 해서 해당 컴포넌트가 unmount가 되면
-	- state에 값이 담기는 동작이 중단되야 하지만 계속 동작되기 때문에 메모리 누수가 발생하면서 에러가 출력된다.
+	[ 메모리 누수 에러 ]
+	- router로 컴포넌트를 빠르게 이동할 때 메모리 누수(memory leak) 에러가 발생하는 이유
+	
+	fetching되는 데이터가 많아서 state에 값을 담을 때 시간이 오래 걸리는 경우 
+	state에 값이 모두 담기지 않았는데 컴포넌트를 이동하여 해당 컴포넌트가 unmount 되었을 때 
+	state에 값이 담기는 동작이 중단되어야 하지만 계속 동작되기 때문에 메모리 누수가 발생한다.
 
-	해결방법
-	- 특정 state를 해당 컴포넌트에 만들어서 그 state값이 true일 때에만 data fetching 후 state에 값을 담기게 만들고
-	- 해당 컴포넌트가 unmount가 될때 state값을 false로 변경
+	[ 해결방법 ]
+	특정 state를 만들고 state값이 true일 때에만 data fetching 후 state에 값을 담을 수 있도록 처리
+	컴포넌트가 unmount될 때 state값을 false로 변경
 */
 
 function Gallery() {
@@ -63,17 +64,19 @@ function Gallery() {
 				return alert('이미지 결과값이 없습니다.');
 			}
 
-			// 외부 API로부터 데이터 Fetching 시간이 오래 걸리는 경우
-			// 컴포넌트가 unmount될 때 해당 Mounted 값을 false로 변경처리
-			// Mounted 값이 true일 때에만 Fetching된 데이터를 state에 담는다.
-			// 데이터 fetching전 컴포넌트가 unmount되면 state에 값을 담지 않으므로 불필요한 메모리 누수가 발생하지 않음
+			/*
+				[ 외부 API 데이터 Fetching이 오래 걸릴 때 ]
+				- 컴포넌트가 unmount될 때 해당 Mounted 값을 false로 변경처리
+				- Mounted 값이 true일 때에만 Fetching된 데이터를 state에 저장
+				- 데이터 fetching 전 컴포넌트가 unmount되면 state에 값을 담지 않으므로 불필요한 메모리 누수가 발생하지 않는다.
+			*/
 			Mounted && setItems(result.data.photos.photo);
 
 			/*
-			1. 외부 데이터가 state에 담기고 DOM이 생성되는 순간 모든 img 요소를 찾아서 반복처리
-			2. img요소에 load이벤트가 발생할 때(소스 이미지까지 로딩이 완료될때마다) 내부적으로 counter값을 1씩 증가
-			3. 로딩 완료된 이미지수와 전체 이미지수가 같아지면 로더를 제거 후 이미지 갤러리 보임 처리
-		*/
+				1. 외부 데이터가 state에 담기고 DOM이 생성되는 순간 모든 img 요소를 찾아서 반복처리
+				2. img요소에 load이벤트가 발생할 때(소스 이미지까지 로딩이 완료될때마다) 내부적으로 counter값을 1씩 증가
+				3. 로딩 완료된 이미지수와 전체 이미지수가 같아지면 로더를 제거 후 이미지 갤러리 보임 처리
+			*/
 			const imgs = frame.current?.querySelectorAll('img');
 
 			// imgs에 받아지는 값이 없으면 아래쪽의 반복문이 실행되지 않도록 return으로 강제 종료
@@ -85,26 +88,26 @@ function Gallery() {
 					console.log(counter);
 
 					/*
-					[ 결과값의 개수가 적게 리턴되는 문제 발생 ]
-					특정 사용자 아이디로 갤러리를 출력할 때 counter개수가 2개 부족한 이유
+						[ 결과값의 개수가 적게 리턴되는 문제 발생 ]
+						특정 사용자 아이디로 갤러리를 출력할 때 counter개수가 2개 부족한 이유
 
-					- 이벤트 발생시점에 출력될 이미지 DOM요소 중에서 이미 해당 사용자의 이미지와 프로필 이미지 소스 2개가 캐싱이 완료
-					- 따라서 실제 생성된 이미지 DOM의 개수는 20개이지만 캐싱이 완료된 2개의 소스 이미지 때문에 onload 이벤트는 18번만 발생
-					- 캐싱된 이미지는 onload 이벤트를 타지 않는다.
-				*/
+						- 이벤트 발생시점에 출력될 이미지 DOM요소 중에서 이미 해당 사용자의 이미지와 프로필 이미지 소스 2개가 캐싱이 완료
+						- 따라서 실제 생성된 이미지 DOM의 개수는 20개이지만 캐싱이 완료된 2개의 소스 이미지 때문에 onload 이벤트는 18번만 발생
+						- 캐싱된 이미지는 onload 이벤트를 타지 않는다.
+					*/
 					if (counter === imgs.length - 2) {
 						setLoader(false);
 						frame.current.classList.add('on');
 						enableEvent.current = true;
 
 						/*
-						모션 진행중 재이벤트 방지시 모션이 끝날때까지 이벤트를 방지해도 모션이 끝나는 순간 이벤트가 많이 발생하면 특정값이 바뀌는 순간보다 이벤트가 더 빨리 들어가 오류가 발생할 경우
-						-> 해결방법: 물리적으로 이벤트 호출을 지연시켜 마지막에 발생한 이벤트만 동작처리 (Debouncing)
-						
-						[ 단시간에 많이 발생하는 이벤트의 함수 호출을 줄이는 방법 ]
-						1. Debouncing: 이벤트 발생시 바로 호출하는 것이 아닌 일정시간 시간을 두고 마지막에 발생한 이벤트만 호출
-						2. throttling: 이벤트 발생시 호출되는 함수를 줄인다.
-					*/
+							모션 진행중 재이벤트 방지시 모션이 끝날때까지 이벤트를 방지해도 모션이 끝나는 순간 이벤트가 많이 발생하면 특정값이 바뀌는 순간보다 이벤트가 더 빨리 들어가 오류가 발생할 경우
+							-> 해결방법: 물리적으로 이벤트 호출을 지연시켜 마지막에 발생한 이벤트만 동작처리 (Debouncing)
+							
+							[ 단시간에 많이 발생하는 이벤트의 함수 호출을 줄이는 방법 ]
+							1. Debouncing: 이벤트 발생시 바로 호출하는 것이 아닌 일정시간 시간을 두고 마지막에 발생한 이벤트만 호출
+							2. throttling: 이벤트 발생시 호출되는 함수를 줄인다.
+						*/
 					}
 				};
 			});
@@ -159,8 +162,8 @@ function Gallery() {
 	useEffect(() => {
 		getFlickr({ type: 'user', user: '198471371@N05' });
 
-		// 컴포넌트 unmount될 때 Mounted값을 false로 변경하여 state에 값이 담기는것을 방지
 		return () => {
+			// 컴포넌트가 unmount될 때 Mounted값을 false로 변경하여 state에 값이 담기는것을 방지
 			setMounted(false);
 		};
 	}, [getFlickr]);

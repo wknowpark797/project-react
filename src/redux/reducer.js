@@ -1,8 +1,10 @@
-/* store의 데이터를 변경해주는 변형자 함수 */
-// 초기 데이터값을 state로 지정하고 추후 action객체가 넘어오면 action의 타입에 따라 해당 데이터를 변경해주는 변형자 함수 생성
+/* 
+	store의 데이터를 변경해주는 변형자 함수
+	- 초기 데이터값을 state로 지정하고 추후 action객체가 넘어오면 action의 타입에 따라 해당 데이터를 변경해주는 변형자 함수 생성
+	- 비동기 형식으로 받을 데이터를 빈배열로 초기화
+*/
 
-// combineReducers: 여러개의 객체 데이터를 하나의 객체로 합쳐준다.
-import { combineReducers } from 'redux';
+import { combineReducers } from 'redux'; // 여러개의 객체 데이터를 하나의 객체로 합쳐준다.
 
 /* Members */
 const memberReducer = (state = { members: [] }, action) => {
