@@ -1,33 +1,12 @@
 import Layout from '../common/Layout';
-import axios from 'axios';
-import { useState, useEffect, useRef } from 'react';
+import { useState, useRef } from 'react';
 import Modal from '../common/Modal';
-import { useSelector, useDispatch } from 'react-redux';
-import { setYoutube } from '../../redux/action';
+import { useSelector } from 'react-redux';
 
 function Youtube() {
 	const modal = useRef(null);
-
-	const VideoList = useSelector((store) => store.youtubeReducer.youtube);
-	console.log(VideoList);
-	const dispatch = useDispatch();
-
 	const [SelectIdx, setSelectIdx] = useState(0);
-
-	const fetchYoutube = async () => {
-		const key = 'AIzaSyA4f3SqOYivsLVITR7K6g5K0QrKhvUZ7hw';
-		const list = 'PLuYjs7JL1VFCBJV6rASuppjv0wuF4iTR7';
-		const num = 10;
-		const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${list}&key=${key}&maxResults=${num}`;
-
-		// async await로 변환 (useEffect 밖에서 함수생성 후 호출)
-		const result = await axios.get(url);
-
-		// setVideoList(result.data.items);
-		dispatch(setYoutube(result.data.items));
-	};
-
-	useEffect(() => fetchYoutube(), []);
+	const VideoList = useSelector((store) => store.youtubeReducer.youtube);
 
 	return (
 		<>

@@ -1,5 +1,8 @@
 import { Route, Switch } from 'react-router-dom';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { setYoutube } from './redux/action';
 
 import Footer from './components/common/Footer';
 import Header from './components/common/Header';
@@ -18,6 +21,24 @@ import './scss/style.scss';
 
 function App() {
 	const menu = useRef(null);
+	const dispatch = useDispatch();
+
+	const fetchYoutube = async () => {
+		const key = 'AIzaSyA4f3SqOYivsLVITR7K6g5K0QrKhvUZ7hw';
+		const list = 'PLuYjs7JL1VFCBJV6rASuppjv0wuF4iTR7';
+		const num = 10;
+		const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${list}&key=${key}&maxResults=${num}`;
+
+		// async await로 변환 (useEffect 밖에서 함수생성 후 호출)
+		const result = await axios.get(url);
+
+		// setVideoList(result.data.items);
+		dispatch(setYoutube(result.data.items));
+	};
+
+	useEffect(() => {
+		fetchYoutube();
+	}, []);
 
 	return (
 		<>
