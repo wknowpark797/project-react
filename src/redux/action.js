@@ -2,6 +2,7 @@
 
 // 인수로 전달된 값을 payload에 담아서 action객체를 반환하는 함수를 export
 // 해당 action 생성함수는 컴포넌트에서 호출될 예정
+// action객체는 컴포넌트에서 사용자가 생성하게 된다.
 export const setMembers = (data) => {
 	return {
 		type: 'SET_MEMBERS',
