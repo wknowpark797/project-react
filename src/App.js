@@ -2,7 +2,7 @@ import { Route, Switch } from 'react-router-dom';
 import { useEffect, useRef, useCallback } from 'react';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
-import { setYoutube } from './redux/action';
+import { setYoutube, setMembers } from './redux/action';
 
 import Footer from './components/common/Footer';
 import Header from './components/common/Header';
@@ -36,9 +36,15 @@ function App() {
 		dispatch(setYoutube(result.data.items));
 	}, [dispatch]);
 
+	const fetchMembers = useCallback(async () => {
+		const result = await axios.get(`${process.env.PUBLIC_URL}/DB/members.json`);
+		dispatch(setMembers(result.data.members));
+	}, [dispatch]);
+
 	useEffect(() => {
 		fetchYoutube();
-	}, [fetchYoutube]);
+		fetchMembers();
+	}, [fetchYoutube, fetchMembers]);
 
 	return (
 		<>
