@@ -20,8 +20,10 @@
 */
 
 import { takeLatest, put, call, fork, all } from 'redux-saga/effects';
-import { fetchYoutube } from './api';
+import { fetchYoutube, fetchMembers } from './api';
 import * as types from './actionType';
+
+/* youtube */
 
 // 컴포넌트로부터 reducer에 전달된 YOUTUBE_START action요청을 대신 전달받아 데이터 fetching 함수를 호출해주는 함수
 function* callYoutube() {
@@ -40,7 +42,21 @@ function* returnYoutube() {
 	}
 }
 
+/* members */
+function* callMembers() {
+	yield takeLatest(types.MEMBERS.start, returnMembers);
+}
+
+function* returnMembers() {
+	try {
+		const response = yield call(fetchMembers);
+		yield put({ type: types.MEMBERS.success, payload: response.data.members });
+	} catch (err) {
+		yield put({ type: types.MEMBERS.fail, payload: err });
+	}
+}
+
 // 최종적으로 fork를 통해 callYoutube 호출 함수 제작
 export default function* rootSaga() {
-	yield all([fork(callYoutube)]);
+	yield all([fork(callYoutube), fork(callMembers)]);
 }

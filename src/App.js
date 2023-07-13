@@ -24,6 +24,7 @@ function App() {
 
 	useEffect(() => {
 		dispatch({ type: types.YOUTUBE.start });
+		dispatch({ type: types.MEMBERS.start });
 	}, [dispatch]);
 
 	return (

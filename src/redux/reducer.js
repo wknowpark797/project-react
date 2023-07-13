@@ -3,6 +3,7 @@
 import { combineReducers } from 'redux';
 import * as types from './actionType';
 
+// youtube
 const youtubeReducer = (state = { youtube: [] }, action) => {
 	switch (action.type) {
 		// 컴포넌트로부터 넘겨받는 action 객체
@@ -23,5 +24,19 @@ const youtubeReducer = (state = { youtube: [] }, action) => {
 	}
 };
 
-const reducers = combineReducers({ youtubeReducer });
+// members
+const membersReducer = (state = { members: [] }, action) => {
+	switch (action.type) {
+		case types.MEMBERS.start:
+			return state;
+		case types.MEMBERS.success:
+			return { ...state, members: action.payload };
+		case types.MEMBERS.fail:
+			return { ...state, members: action.payload };
+		default:
+			return state;
+	}
+};
+
+const reducers = combineReducers({ youtubeReducer, membersReducer });
 export default reducers;
