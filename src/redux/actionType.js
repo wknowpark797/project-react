@@ -1,4 +1,4 @@
-// 각 데이터 카테고리별로 사용될 action type명을 변수처럼 모아놓은 객체
+/* 각 데이터 카테고리별로 사용될 action type명을 변수처럼 모아놓은 객체 */
 
 export const YOUTUBE = {
 	start: 'YOUTUBE_START',
@@ -21,13 +21,13 @@ export const MEMBERS = {
   3. api.js
     - axios로 비동기 데이터 호출 함수를 순수함수 형태로 만들어서 export
   4. saga.js
-    - 처음에 reducer가 전달받는 start action 요청을 감지해서 api.js로부터 데이터 fetching 받고 새로운 action객체로 반환하는 함수
+    - 처음에 reducer가 전달받는 start action 요청을 감지해서 api.js로부터 데이터를 fetching 받고 새로운 action객체로 반환하는 함수 export
   5. store.js
     - reducer에 saga 미들웨어 연결 후 연결된 데이터값으로 store 전역객체에 저장 후 export
   6. index.js
     - store 전역객체를 App 루트 컴포넌트에 전달
   7. App.js
-    - 컴포넌트가 mount 되자마자 Youtube_START라는 action 객체를 dispatch로 전달 
+    - 컴포넌트가 mount 되자마자 YOUTUBE_START라는 action 객체를 dispatch로 전달 
     - (이후 reducer -> saga -> store 흐름으로 전역 state 객체가 생성)
   8. 원하는 컴포넌트에서 자유롭게 useSelector로 해당 데이터를 가져온다.
 */
