@@ -11,8 +11,8 @@ function Youtube() {
 	const [SelectIdx, setSelectIdx] = useState(0);
 
 	const fetchYoutube = async () => {
-		const key = 'AIzaSyDwb_57BfoNHLxlZ-Mwn2O3VNVt2tFNNMw';
-		const list = 'PLEJLcTMBRARd4AKwM7CM_0gf2mKviNR3J';
+		const key = 'AIzaSyA4f3SqOYivsLVITR7K6g5K0QrKhvUZ7hw';
+		const list = 'PLuYjs7JL1VFCBJV6rASuppjv0wuF4iTR7';
 		const num = 10;
 		const url = `https://www.googleapis.com/youtube/v3/playlistItems?part=snippet&playlistId=${list}&key=${key}&maxResults=${num}`;
 
@@ -30,9 +30,7 @@ function Youtube() {
 					return (
 						<article key={idx}>
 							<h2>
-								{video.snippet.title.length > 50
-									? video.snippet.title.substr(0, 50) + '...'
-									: video.snippet.title}
+								{video.snippet.title.length > 50 ? video.snippet.title.substr(0, 50) + '...' : video.snippet.title}
 							</h2>
 							<div className='txt'>
 								<p>
