@@ -1,5 +1,7 @@
 import { Route, Switch } from 'react-router-dom';
-import { useRef } from 'react';
+import { useEffect, useRef } from 'react';
+import { useDispatch } from 'react-redux';
+import * as types from './redux/actionType';
 
 import Footer from './components/common/Footer';
 import Header from './components/common/Header';
@@ -18,6 +20,11 @@ import './scss/style.scss';
 
 function App() {
 	const menu = useRef(null);
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch({ type: types.YOUTUBE.start });
+	}, [dispatch]);
 
 	return (
 		<>
