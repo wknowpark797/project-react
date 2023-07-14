@@ -23,6 +23,7 @@ function App() {
 	const menu = useRef(null);
 
 	const dispatch = useDispatch();
+
 	useEffect(() => {
 		dispatch(fetchYoutube());
 	}, [dispatch]);
