@@ -1,7 +1,8 @@
 import { memo } from 'react';
+import { useSelector } from 'react-redux';
 
 function Vids() {
-	console.log('Vids');
+	useSelector((store) => console.log(store));
 
 	return (
 		<section id='vids' className='myScroll'>
