@@ -1,8 +1,17 @@
 import Layout from '../common/Layout';
 import Modal from '../common/Modal';
 import Masonry from 'react-masonry-component';
-import axios from 'axios';
-import { useState, useEffect, useRef, useCallback } from 'react';
+import { useState, useEffect, useRef } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import * as types from '../../redux/actionType';
+
+/*
+	[ 갤러리 컴포넌트에서 전역 비동기 데이터 변경방법 ]
+	dispatch를 액션 객체로 보낼 때 opt도 같이 전달
+
+	각각의 함수(showInterest, showSearch, showMine, showUser)가 실행될때마다 내부적으로 opt 지역 state 변경
+	useEffect에 opt state값을 의존성 배열로 등록해서 dispatch로 opt가 바뀔때마다 action객체를 전달하도록 설정
+*/
 
 function Gallery() {
 	const isUser = useRef(true); // user 데이터 재호출 방지
@@ -10,85 +19,20 @@ function Gallery() {
 	const btnSet = useRef(null);
 	const enableEvent = useRef(true); // 재이벤트 방지
 	const frame = useRef(null);
-	const [Items, setItems] = useState([]);
+	const counter = useRef(0);
+	const firstLoaded = useRef(true);
 	const [Loader, setLoader] = useState(true);
 
 	const modal = useRef(null);
 	const [ModalIndex, setModalIndex] = useState(0);
 
-	const getFlickr = useCallback(async (opt) => {
-		// 함수가 재실행될 때마다 counter값을 초기화
-		let counter = 0;
-
-		const baseURL = 'https://www.flickr.com/services/rest/?format=json&nojsoncallback=1';
-		const key = '7f259a4112d06fbef0736c84af20f014';
-		const method_interest = 'flickr.interestingness.getList';
-		const method_search = 'flickr.photos.search';
-		const method_user = 'flickr.people.getPhotos';
-		const num = 10;
-		let url = '';
-
-		if (opt.type === 'interest') url = `${baseURL}&api_key=${key}&method=${method_interest}&per_page=${num}`;
-		if (opt.type === 'search')
-			url = `${baseURL}&api_key=${key}&method=${method_search}&per_page=${num}&tags=${opt.tags}`;
-		if (opt.type === 'user')
-			url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
-
-		const result = await axios.get(url);
-		if (result.data.photos.photo.length === 0) {
-			setLoader(false);
-			frame.current.classList.add('on');
-
-			const btnMine = btnSet.current.children;
-			btnMine[1].classList.add('on');
-
-			getFlickr({ type: 'user', user: '198471371@N05' });
-			enableEvent.current = true;
-
-			return alert('이미지 결과값이 없습니다.');
-		}
-
-		setItems(result.data.photos.photo);
-
-		/*
-			1. 외부 데이터가 state에 담기고 DOM이 생성되는 순간 모든 img 요소를 찾아서 반복처리
-			2. img요소에 load이벤트가 발생할 때(소스 이미지까지 로딩이 완료될때마다) 내부적으로 counter값을 1씩 증가
-			3. 로딩 완료된 이미지수와 전체 이미지수가 같아지면 로더를 제거 후 이미지 갤러리 보임 처리
-		*/
-		const imgs = frame.current.querySelectorAll('img');
-		console.log('이미지 DOM 개수: ', imgs.length);
-		imgs.forEach((img) => {
-			img.onload = () => {
-				++counter;
-				console.log(counter);
-
-				/*
-					[ 결과값의 개수가 적게 리턴되는 문제 발생 ]
-					특정 사용자 아이디로 갤러리를 출력할 때 counter개수가 2개 부족한 이유
-
-					- 이벤트 발생시점에 출력될 이미지 DOM요소 중에서 이미 해당 사용자의 이미지와 프로필 이미지 소스 2개가 캐싱이 완료
-					- 따라서 실제 생성된 이미지 DOM의 개수는 20개이지만 캐싱이 완료된 2개의 소스 이미지 때문에 onload 이벤트는 18번만 발생
-					- 캐싱된 이미지는 onload 이벤트를 타지 않는다.
-				*/
-				if (counter === imgs.length - 2) {
-					setLoader(false);
-					frame.current.classList.add('on');
-					enableEvent.current = true;
-
-					/*
-						모션 진행중 재이벤트 방지시 모션이 끝날때까지 이벤트를 방지해도 모션이 끝나는 순간 이벤트가 많이 발생하면 특정값이 바뀌는 순간보다 이벤트가 더 빨리 들어가 오류가 발생할 경우
-						-> 해결방법: 물리적으로 이벤트 호출을 지연시켜 마지막에 발생한 이벤트만 동작처리 (Debouncing)
-						
-						[ 단시간에 많이 발생하는 이벤트의 함수 호출을 줄이는 방법 ]
-						1. Debouncing: 이벤트 발생시 바로 호출하는 것이 아닌 일정시간 시간을 두고 마지막에 발생한 이벤트만 호출
-						2. throttling: 이벤트 발생시 호출되는 함수를 줄인다.
-					*/
-				}
-			};
-		});
-	}, []);
+	const dispatch = useDispatch();
+	const Items = useSelector((store) => store.flickrReducer.flickr);
+	// 페이지를 새로고침할 때 myGallery를 default로 출력
+	const [Opt, setOpt] = useState({ type: 'user', user: '198471371@N05' });
 
 	// 기존 갤러리 초기화 함수
+	// 이벤트 발생시 각각 interest, mine, search, user 갤러리를 호출할 때마다 기존 갤러리를 사라지게하고 로딩바를 노출시키는 공통 초기화 함수
 	const resetGallery = (e) => {
 		const btns = btnSet.current.querySelectorAll('button');
 
@@ -107,7 +51,8 @@ function Gallery() {
 
 		resetGallery(e); // 기존 갤러리 초기화
 
-		getFlickr({ type: 'interest' });
+		// action객체에 추가로 전달해야 될 옵션을 Opt state로 변경처리
+		setOpt({ type: 'interest' });
 		isUser.current = false;
 	};
 
@@ -117,7 +62,7 @@ function Gallery() {
 
 		resetGallery(e);
 
-		getFlickr({ type: 'user', user: '198471371@N05' });
+		setOpt({ type: 'user', user: '198471371@N05' });
 	};
 
 	const showSearch = (e) => {
@@ -127,12 +72,73 @@ function Gallery() {
 
 		resetGallery(e);
 
-		getFlickr({ type: 'search', tags: tag });
+		setOpt({ type: 'search', tags: tag });
 		searchInput.current.value = '';
 		isUser.current = false;
 	};
 
-	useEffect(() => getFlickr({ type: 'user', user: '198471371@N05' }), [getFlickr]);
+	// action객체에 추가로 전달되어야 할 Opt값이 변경될 때마다 새롭게 action객체를 생성해서 reducer에 전달
+	useEffect(() => {
+		dispatch({ type: types.FLICKR.start, opt: Opt });
+	}, [Opt, dispatch]);
+
+	// 전역 state 정보값이 변경될 때마다 구문 실행
+	// 이벤트 기능 다시 활성화, 이미지 로딩 이벤트가 발생하여 이미지 소스 출력이 완료되면 갤러리 노출 처리, 버튼 활성화 처리
+	useEffect(() => {
+		console.log(Items);
+		counter.current = 0; // 재실행 될 때마다 counter값을 초기화
+
+		if (Items.length === 0 && !firstLoaded.current) {
+			setLoader(false);
+			frame.current.classList.add('on');
+
+			const btnMine = btnSet.current.children;
+			btnMine[1].classList.add('on');
+
+			setOpt({ type: 'user', user: '198471371@N05' });
+			enableEvent.current = true;
+
+			return alert('이미지 결과값이 없습니다.');
+		}
+		firstLoaded.current = false;
+
+		/*
+			1. 외부 데이터가 state에 담기고 DOM이 생성되는 순간 모든 img 요소를 찾아서 반복처리
+			2. img요소에 load이벤트가 발생할 때(소스 이미지까지 로딩이 완료될때마다) 내부적으로 counter값을 1씩 증가
+			3. 로딩 완료된 이미지수와 전체 이미지수가 같아지면 로더를 제거 후 이미지 갤러리 보임 처리
+		*/
+		const imgs = frame.current.querySelectorAll('img');
+
+		imgs.forEach((img) => {
+			img.onload = () => {
+				++counter.current;
+				console.log(counter);
+
+				/*
+					[ 결과값의 개수가 적게 리턴되는 문제 발생 ]
+					특정 사용자 아이디로 갤러리를 출력할 때 counter개수가 2개 부족한 이유
+
+					- 이벤트 발생시점에 출력될 이미지 DOM요소 중에서 이미 해당 사용자의 이미지와 프로필 이미지 소스 2개가 캐싱이 완료
+					- 따라서 실제 생성된 이미지 DOM의 개수는 20개이지만 캐싱이 완료된 2개의 소스 이미지 때문에 onload 이벤트는 18번만 발생
+					- 캐싱된 이미지는 onload 이벤트를 타지 않는다.
+				*/
+				if (counter.current === imgs.length - 2) {
+					setLoader(false);
+					frame.current.classList.add('on');
+					enableEvent.current = true;
+
+					/*
+						모션 진행중 재이벤트 방지시 모션이 끝날때까지 이벤트를 방지해도 모션이 끝나는 순간 이벤트가 많이 발생하면 특정값이 바뀌는 순간보다 이벤트가 더 빨리 들어가 오류가 발생할 경우
+						-> 해결방법: 물리적으로 이벤트 호출을 지연시켜 마지막에 발생한 이벤트만 동작처리 (Debouncing)
+						
+						[ 단시간에 많이 발생하는 이벤트의 함수 호출을 줄이는 방법 ]
+						1. Debouncing: 이벤트 발생시 바로 호출하는 것이 아닌 일정시간 시간을 두고 마지막에 발생한 이벤트만 호출
+						2. throttling: 이벤트 발생시 호출되는 함수를 줄인다.
+					*/
+				}
+			};
+		});
+	}, [Items]);
 
 	return (
 		<>
@@ -187,7 +193,7 @@ function Gallery() {
 													isUser.current = true;
 													setLoader(true);
 													frame.current.classList.remove('on');
-													getFlickr({ type: 'user', user: e.target.innerText });
+													setOpt({ type: 'user', user: e.target.innerText });
 												}}
 											>
 												{item.owner}
