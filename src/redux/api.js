@@ -14,6 +14,22 @@ export const fetchMembers = async () => {
 	return await axios.get(`${process.env.PUBLIC_URL}/DB/members.json`);
 };
 
+export const fetchFlickr = async (opt) => {
+	const baseURL = 'https://www.flickr.com/services/rest/?format=json&nojsoncallback=1';
+	const key = '7f259a4112d06fbef0736c84af20f014';
+	const method_interest = 'flickr.interestingness.getList';
+	const method_search = 'flickr.photos.search';
+	const method_user = 'flickr.people.getPhotos';
+	const num = 10;
+	let url = '';
+
+	if (opt.type === 'interest') url = `${baseURL}&api_key=${key}&method=${method_interest}&per_page=${num}`;
+	if (opt.type === 'search') url = `${baseURL}&api_key=${key}&method=${method_search}&per_page=${num}&tags=${opt.tags}`;
+	if (opt.type === 'user') url = `${baseURL}&api_key=${key}&method=${method_user}&per_page=${num}&user_id=${opt.user}`;
+
+	return await axios.get(url);
+};
+
 /*
   [ 순수 함수 (Pure Function) ]
   - 부수효과를 발생시키지 않는 순수 자바스크립트로만 동작 가능한 함수

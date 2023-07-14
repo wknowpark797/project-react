@@ -12,6 +12,12 @@ export const MEMBERS = {
 	fail: 'MEMBERS_FAIL',
 };
 
+export const FLICKR = {
+	start: 'FLICKR_START',
+	success: 'FLICKR_SUCCESS',
+	fail: 'FLICKR_FAIL',
+};
+
 /*
   [ Redux Saga 데이터 흐름 순서 ]
   1. actionType.js

@@ -5,7 +5,7 @@
 */
 
 import { takeLatest, put, call, fork, all } from 'redux-saga/effects';
-import { fetchYoutube, fetchMembers } from './api';
+import { fetchYoutube, fetchMembers, fetchFlickr } from './api';
 import * as types from './actionType';
 
 /* youtube saga */
@@ -40,9 +40,24 @@ function* returnMembers() {
 	}
 }
 
+/* flickrs saga */
+function* callFlickr() {
+	yield takeLatest(types.FLICKR.start, returnFlickr);
+}
+
+function* returnFlickr(action) {
+	try {
+		// 컴포넌트에서 action객체 전달시 type외의 프로퍼티값이 있다면 해당 값을 받아서 call 함수 두번째 인수로 api 함수에 인수로 전달 가능
+		const response = yield call(fetchFlickr, action.opt);
+		yield put({ type: types.FLICKR.success, payload: response.data.photos.photo });
+	} catch (err) {
+		yield put({ type: types.FLICKR.fail, payload: err });
+	}
+}
+
 // 최종적으로 fork를 통해 call 호출 함수 제작
 export default function* rootSaga() {
-	yield all([fork(callYoutube), fork(callMembers)]);
+	yield all([fork(callYoutube), fork(callMembers), fork(callFlickr)]);
 }
 
 /*
