@@ -8,21 +8,24 @@ import { takeLatest, put, call, fork, all } from 'redux-saga/effects';
 import { fetchYoutube, fetchMembers, fetchFlickr } from './api';
 import * as types from './actionType';
 
+/*
+	callYoutube()
+	- 컴포넌트로부터 reducer에 전달된 YOUTUBE_START action 요청을 대신 전달받아 데이터 fetching 함수를 호출해주는 함수
+
+	returnYoutube()
+	- 유튜브 데이터를 호출한 뒤 반환된 값으로 새롭게 action객체를 생성하고 reducer에 전달
+*/
+
 /* youtube saga */
-// 컴포넌트로부터 reducer에 전달된 YOUTUBE_START action요청을 대신 전달받아 데이터 fetching 함수를 호출해주는 함수
 function* callYoutube() {
 	yield takeLatest(types.YOUTUBE.start, returnYoutube);
 }
-
-// 유튜브 데이터를 호출한 뒤 반환된 값으로 새롭게 action객체를 생성하는 함수
 function* returnYoutube() {
 	try {
-		// 데이터 fetching 성공시
 		const response = yield call(fetchYoutube);
-		yield put({ type: types.YOUTUBE.success, payload: response.data.items }); // reducer에 전달
+		yield put({ type: types.YOUTUBE.success, payload: response.data.items }); // 데이터 fetching 성공시
 	} catch (err) {
-		// 데이터 fetching 실패시
-		yield put({ type: types.YOUTUBE.fail, payload: err });
+		yield put({ type: types.YOUTUBE.fail, payload: err }); // 데이터 fetching 실패시
 	}
 }
 
@@ -30,7 +33,6 @@ function* returnYoutube() {
 function* callMembers() {
 	yield takeLatest(types.MEMBERS.start, returnMembers);
 }
-
 function* returnMembers() {
 	try {
 		const response = yield call(fetchMembers);
@@ -44,10 +46,9 @@ function* returnMembers() {
 function* callFlickr() {
 	yield takeLatest(types.FLICKR.start, returnFlickr);
 }
-
 function* returnFlickr(action) {
 	try {
-		// 컴포넌트에서 action객체 전달시 type외의 프로퍼티값이 있다면 해당 값을 받아서 call 함수 두번째 인수로 api 함수에 인수로 전달 가능
+		// 컴포넌트에서 action객체 전달시 type외의 프로퍼티값이 있다면 해당 값을 받아서 call 함수의 두번째 인수로, api함수의 인수로 전달 가능
 		const response = yield call(fetchFlickr, action.opt);
 		yield put({ type: types.FLICKR.success, payload: response.data.photos.photo });
 	} catch (err) {

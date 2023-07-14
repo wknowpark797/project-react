@@ -6,11 +6,10 @@ import { useSelector, useDispatch } from 'react-redux';
 import * as types from '../../redux/actionType';
 
 /*
-	[ 갤러리 컴포넌트에서 전역 비동기 데이터 변경방법 ]
-	dispatch를 액션 객체로 보낼 때 opt도 같이 전달
-
-	각각의 함수(showInterest, showSearch, showMine, showUser)가 실행될때마다 내부적으로 opt 지역 state 변경
-	useEffect에 opt state값을 의존성 배열로 등록해서 dispatch로 opt가 바뀔때마다 action객체를 전달하도록 설정
+	[ Gallery 컴포넌트에서 전역 비동기 데이터를 변경하는 방법 ]
+	dispatch로 액션 객체를 보낼 때 Opt(옵션)도 같이 전달한다.
+	- 각각의 함수(showInterest, showSearch, showMine, showUser)가 실행될때마다 내부적으로 Opt 지역 state 변경
+	- useEffect에 Opt state값을 의존성 배열로 등록해서 dispatch로 Opt가 바뀔때마다 action객체를 전달하도록 설정
 */
 
 function Gallery() {
@@ -28,11 +27,12 @@ function Gallery() {
 
 	const dispatch = useDispatch();
 	const Items = useSelector((store) => store.flickrReducer.flickr);
-	// 페이지를 새로고침할 때 myGallery를 default로 출력
-	const [Opt, setOpt] = useState({ type: 'user', user: '198471371@N05' });
+	const [Opt, setOpt] = useState({ type: 'user', user: '198471371@N05' }); // 페이지를 새로고침할 때 myGallery를 default로 출력
 
-	// 기존 갤러리 초기화 함수
-	// 이벤트 발생시 각각 interest, mine, search, user 갤러리를 호출할 때마다 기존 갤러리를 사라지게하고 로딩바를 노출시키는 공통 초기화 함수
+	/*
+		기존 갤러리 초기화 함수
+		- 이벤트 발생시 각각 interest, mine, search, userGallery를 호출할 때마다 기존 갤러리를 사라지게하고 로딩바를 노출시키는 공통 초기화 함수
+	*/
 	const resetGallery = (e) => {
 		const btns = btnSet.current.querySelectorAll('button');
 
@@ -51,7 +51,7 @@ function Gallery() {
 
 		resetGallery(e); // 기존 갤러리 초기화
 
-		// action객체에 추가로 전달해야 될 옵션을 Opt state로 변경처리
+		// action객체에 추가로 전달해야 할 옵션을 Opt state로 변경처리
 		setOpt({ type: 'interest' });
 		isUser.current = false;
 	};
@@ -82,12 +82,11 @@ function Gallery() {
 		dispatch({ type: types.FLICKR.start, opt: Opt });
 	}, [Opt, dispatch]);
 
-	// 전역 state 정보값이 변경될 때마다 구문 실행
-	// 이벤트 기능 다시 활성화, 이미지 로딩 이벤트가 발생하여 이미지 소스 출력이 완료되면 갤러리 노출 처리, 버튼 활성화 처리
+	// 전역 state 정보값이 변경될 때마다 구문 실행 (이벤트 기능 재활성화, 이미지 로딩 이벤트 후 갤러리 노출, 버튼 활성화)
 	useEffect(() => {
-		console.log(Items);
 		counter.current = 0; // 재실행 될 때마다 counter값을 초기화
 
+		// 결과값이 없을 때 && 처음 mount 상태가 아닐 때 경고창 출력
 		if (Items.length === 0 && !firstLoaded.current) {
 			setLoader(false);
 			frame.current.classList.add('on');
