@@ -54,7 +54,7 @@ function App() {
 				<Department />
 			</Route> */}
 			<Route path='/community' component={Community} />
-			{/* <Route path='/gallery' component={Gallery} /> */}
+			<Route path='/gallery' component={Gallery} />
 			<Route path='/youtube' component={Youtube} />
 			<Route path='/contact' component={Contact} />
 			<Route path='/member' component={Member} />
