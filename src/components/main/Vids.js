@@ -16,11 +16,17 @@ function Vids() {
 				modules={[Autoplay, Pagination, Navigation]}
 				loop={true}
 				spaceBetween={50}
-				slidesPerView={3}
+				slidesPerView={1}
 				centeredSlides={true}
 				autoplay={{ delay: 2000, disableOnInteraction: true }}
 				pagination={{ clickable: true }}
 				navigation={true}
+				breakpoints={{
+					1200: {
+						slidesPerView: 3,
+						spaceBetween: 50,
+					},
+				}}
 			>
 				{Vids.map((vid, idx) => {
 					if (idx >= 5) return null;
