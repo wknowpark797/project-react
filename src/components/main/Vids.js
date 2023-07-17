@@ -46,7 +46,7 @@ function Vids() {
 			<Swiper
 				modules={[Autoplay, Pagination, Navigation]}
 				loop={true}
-				spaceBetween={50}
+				spaceBetween={30}
 				slidesPerView={1}
 				centeredSlides={true}
 				autoplay={{ delay: 2000, disableOnInteraction: true }}

@@ -1,9 +1,9 @@
 import Layout from '../common/Layout';
-import Modal from '../common/Modal';
 import Masonry from 'react-masonry-component';
 import { useState, useEffect, useRef } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { fetchFlickr } from '../../redux/flickrSlice';
+import Modal from '../common/Modal';
 
 function Gallery() {
 	const isUser = useRef(true); // user 데이터 재호출 방지
@@ -11,7 +11,7 @@ function Gallery() {
 	const btnSet = useRef(null);
 	const enableEvent = useRef(true); // 재이벤트 방지
 	const frame = useRef(null);
-	const counter = useRef(0); // 함수가 재실행될 때마다 counter값을 초기화
+	const counter = useRef(0);
 	const firstLoaded = useRef(true);
 	const [Loader, setLoader] = useState(true);
 
@@ -67,7 +67,7 @@ function Gallery() {
 
 	useEffect(() => {
 		console.log(Items);
-		counter.current = 0;
+		counter.current = 0; // 함수가 재실행될 때마다 counter값을 초기화
 
 		if (Items.length === 0 && !firstLoaded.current) {
 			setLoader(false);
