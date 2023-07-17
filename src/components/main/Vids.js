@@ -1,10 +1,41 @@
-import { memo } from 'react';
+import { memo, useRef } from 'react';
 import { useSelector } from 'react-redux';
-import { Swiper, SwiperSlide } from 'swiper/react';
+import { Swiper, SwiperSlide, useSwiper } from 'swiper/react';
 import { Autoplay, Pagination, Navigation } from 'swiper';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPause, faPlay } from '@fortawesome/free-solid-svg-icons';
+
+function BtnRolling() {
+	const btnStart = useRef(null);
+	const btnStop = useRef(null);
+	const swiper = useSwiper();
+
+	return (
+		<nav className='controls'>
+			<FontAwesomeIcon
+				ref={btnStart}
+				icon={faPlay}
+				onClick={() => {
+					btnStart.current.classList.add('on');
+					btnStop.current.classList.remove('on');
+					swiper.autoplay.start();
+				}}
+			/>
+			<FontAwesomeIcon
+				ref={btnStop}
+				icon={faPause}
+				onClick={() => {
+					btnStart.current.classList.remove('on');
+					btnStop.current.classList.add('on');
+					swiper.autoplay.stop();
+				}}
+			/>
+		</nav>
+	);
+}
 
 function Vids() {
 	const Vids = useSelector((store) => store.youtube.data);
@@ -28,6 +59,8 @@ function Vids() {
 					},
 				}}
 			>
+				<BtnRolling />
+
 				{Vids.map((vid, idx) => {
 					if (idx >= 5) return null;
 
