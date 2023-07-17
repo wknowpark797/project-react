@@ -17,6 +17,7 @@ import Youtube from './components/sub/Youtube';
 import './scss/style.scss';
 
 import { fetchYoutube } from './redux/youtubeSlice';
+import { fetchDepartment } from './redux/departmentSlice';
 import { useDispatch } from 'react-redux';
 
 /*
@@ -33,6 +34,7 @@ function App() {
 
 	useEffect(() => {
 		dispatch(fetchYoutube());
+		dispatch(fetchDepartment());
 	}, [dispatch]);
 
 	return (
