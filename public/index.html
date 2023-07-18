@@ -63,6 +63,7 @@
 
     createDOM();
 
+    // 배열로부터 동적으로 img, video를 생성하는 함수
     function createDOM() {
       imgs.forEach(src => {
         tags += `<img src=${src} />`;
@@ -92,7 +93,7 @@
       })
     }
 
-    // 비디오 소스 로딩완료 검사함수
+    // 영상 소스 로딩완료 검사함수
     function loadVid() {
       return new Promise((res, rej) => {
         let countVid = 0;
@@ -110,11 +111,16 @@
       })
     }
 
-    // promise.all vs promise.race
-    // promise.all : 인수로 전달받은 모든 promise가 완료되어야 동기화 처리
-    // promise.race : 인수로 전달받은 모든 promise 중 하나라도 완료가 되면 바로 동기화 처리
+    /*
+      [ promise.all vs promise.race ]
 
-    // promise.all()로 loadImg, loadVid 함수가 모두 promise 객체를 반환할 때까지 기다린 후 동기화 처리
+      - promise.all
+        인수로 전달받은 모든 promise가 완료되어야 동기화 처리
+      - promise.race
+        인수로 전달받은 모든 promise 중 하나라도 완료가 되면 바로 동기화 처리
+    */
+
+    // Promise.all()로 loadImg, loadVid 함수가 모두 promise 객체를 반환할 때까지 기다린 후 동기화 처리
     Promise.all([loadImg(), loadVid()]).then(result => {
       console.log(result);
       mask.classList.add('off');
@@ -130,9 +136,10 @@
 </html>
 
 <!--
-  이미지, 영상을 리액트 컴포넌트가 마운트되기 전 미리 캐싱 처리하는 작업흐름
+  [ 이미지, 영상을 리액트 컴포넌트가 마운트되기 전 미리 캐싱 처리 ]
+  
   1. 배열에 캐싱할 이미지와 영상의 URL을 각각 담아준다.
-  2. index.html이 서버로부터 호출되자마자 배열에 담긴 URL을 반복하면서 동적으로 DOM생성
+  2. index.html이 서버로부터 호출되자마자 배열에 담긴 URL을 반복하면서 동적으로 DOM을 생성한다.
   3. DOM이 index.html에 생성되는 동안 마스크 화면을 대신 보여준다.
   4. 모든 영상, 이미지가 캐싱 완료되면 마스크를 강제 제거하고 동적으로 생성된 요소도 제거한다.
   5. 그 사이 리액트 컴포넌트들이 Real DOM으로 변환되면서 화면에 출력

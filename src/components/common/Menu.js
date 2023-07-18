@@ -1,7 +1,7 @@
 /*
-	[ Client Side State 설정하기 ]
+	[ Redux Toolkit - Client Side State 전역 관리하기 ]
 
-	{ open: false, // false - 메뉴제거, true - 메뉴오픈 }
+	{ open: false } // false - 메뉴제거, true - 메뉴오픈
 
 	1. menuSlice.js를 생성해서 위의 정보값을 초기 전역 state로 등록
 	2. reducer에는 해당 전역 state값을 변경해주는 함수를 등록 (close, toggle)
