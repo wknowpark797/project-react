@@ -109,7 +109,7 @@ function Member() {
 	}, [Err, Submit, history]);
 
 	return (
-		<Layout name={'Member'}>
+		<Layout name={'Member'} bg={'Members.jpg'}>
 			<button onClick={() => history.goBack()}>뒤로가기</button>
 			<form onSubmit={handleSubmit}>
 				<fieldset>

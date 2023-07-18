@@ -106,7 +106,7 @@ function Community() {
 	}, [Posts]);
 
 	return (
-		<Layout name={'Community'}>
+		<Layout name={'Community'} bg={'Community.jpg'}>
 			<div className='input-box'>
 				{/* form 태그와 name 속성 사용X */}
 				<input type='text' placeholder='제목을 입력하세요.' ref={input} />
