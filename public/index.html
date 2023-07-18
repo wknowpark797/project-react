@@ -29,6 +29,10 @@
       font: 20px/1 'arial';
       color: #fff;
     }
+
+    .mask.off {
+      opacity: 0;
+    }
   </style>
 </head>
 
@@ -69,6 +73,57 @@
 
       defaults.innerHTML = tags;
     }
+
+    // 이미지 소스 로딩완료 검사함수
+    function loadImg() {
+      return new Promise((res, rej) => {
+        let countImg = 0;
+        const imgDOM = defaults.querySelectorAll('img');
+        imgDOM.forEach(img => {
+          img.onload = () => {
+            countImg++;
+            console.log('img loaded...', countImg);
+
+            if (countImg === lenImg) {
+              res(true);
+            }
+          }
+        })
+      })
+    }
+
+    // 비디오 소스 로딩완료 검사함수
+    function loadVid() {
+      return new Promise((res, rej) => {
+        let countVid = 0;
+        const vidDOM = defaults.querySelectorAll('video');
+        vidDOM.forEach(vid => {
+          vid.onloadeddata = () => {
+            countVid++;
+            console.log('vid loaded...', countVid);
+
+            if (countVid === lenVid) {
+              res(true);
+            }
+          }
+        })
+      })
+    }
+
+    // promise.all vs promise.race
+    // promise.all : 인수로 전달받은 모든 promise가 완료되어야 동기화 처리
+    // promise.race : 인수로 전달받은 모든 promise 중 하나라도 완료가 되면 바로 동기화 처리
+
+    // promise.all()로 loadImg, loadVid 함수가 모두 promise 객체를 반환할 때까지 기다린 후 동기화 처리
+    Promise.all([loadImg(), loadVid()]).then(result => {
+      console.log(result);
+      mask.classList.add('off');
+
+      setTimeout(() => {
+        mask.remove();
+        defaults.remove();
+      }, 2000);
+    })
   </script>
 </body>
 
