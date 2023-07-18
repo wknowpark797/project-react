@@ -7,11 +7,69 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>React App</title>
   <script type="text/javascript" src="//dapi.kakao.com/v2/maps/sdk.js?appkey=138c090e69fe7f8783709c1f2242d6c7"></script>
+  <style>
+    .defaults {
+      position: absolute;
+      top: -99999px;
+    }
+
+    .mask {
+      width: 100%;
+      height: 100vh;
+      background: #111;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 10;
+      opacity: 1;
+      transition: opacity 2s;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font: 20px/1 'arial';
+      color: #fff;
+    }
+  </style>
 </head>
 
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
   <div id="root"></div>
+  <div class="defaults"></div>
+  <div class="mask">Loading...</div>
+
+  <script>
+    // url = https://wknowpark797.github.io/project-react
+    const defaults = document.querySelector('.defaults');
+    const mask = document.querySelector('.mask');
+    let tags = '';
+    const baseURL = 'https://wknowpark797.github.io/project-react';
+    const imgs = [
+      baseURL + '/img/Community.jpg',
+      baseURL + '/img/Department.jpg',
+      baseURL + '/img/Gallery.jpg',
+      baseURL + '/img/Location.jpg',
+      baseURL + '/img/Youtube.jpg',
+      baseURL + '/img/Members.jpg'
+    ];
+    const vids = [baseURL + '/img/vid.mp4'];
+
+    const lenImg = imgs.length;
+    const lenVid = vids.length;
+
+    createDOM();
+
+    function createDOM() {
+      imgs.forEach(src => {
+        tags += `<img src=${src} />`;
+      })
+      vids.forEach(src => {
+        tags += `<video src=${src}></video>`
+      })
+
+      defaults.innerHTML = tags;
+    }
+  </script>
 </body>
 
 </html>
@@ -23,4 +81,5 @@
   3. DOM이 index.html에 생성되는 동안 마스크 화면을 대신 보여준다.
   4. 모든 영상, 이미지가 캐싱 완료되면 마스크를 강제 제거하고 동적으로 생성된 요소도 제거한다.
   5. 그 사이 리액트 컴포넌트들이 Real DOM으로 변환되면서 화면에 출력
+  6. github 사이트에서 redux-toolkit 브랜치를 default로 지정한 뒤 npm run deploy로 빌드 및 배포
 -->
