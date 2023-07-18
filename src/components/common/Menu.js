@@ -8,6 +8,7 @@
 	3. 해당 함수를 원하는 컴포넌트에서 자유롭게 호출해서 전역 state를 변경할 수 있다.
 */
 
+import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NavLink, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
@@ -17,6 +18,12 @@ function Menu() {
 	const active = { color: 'aqua' };
 	const dispatch = useDispatch();
 	const menu = useSelector((store) => store.menu.open);
+
+	useEffect(() => {
+		window.addEventListener('resize', () => {
+			if (window.innerWidth >= 1200) dispatch(close());
+		});
+	}, [dispatch]);
 
 	return (
 		<AnimatePresence>

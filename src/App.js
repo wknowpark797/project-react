@@ -1,5 +1,5 @@
 import { Route, Switch } from 'react-router-dom';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 import Footer from './components/common/Footer';
 import Header from './components/common/Header';
@@ -31,7 +31,6 @@ import { useDispatch } from 'react-redux';
 */
 
 function App() {
-	const menu = useRef(null);
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -44,10 +43,10 @@ function App() {
 		<>
 			{/* Switch는 내부에 중복되는 라우트 경로가 있을 때 먼저 작성된 라우터를 채택하고 나머지는 무시 */}
 			<Switch>
-				<Route exact path='/' render={() => <Main menu={menu} />} />
+				<Route exact path='/' render={() => <Main />} />
 
 				{/* 컴포넌트에 props 전달이 있을 경우의 축약형 */}
-				<Route path='/' render={() => <Header type={'sub'} menu={menu} />} />
+				<Route path='/' render={() => <Header type={'sub'} />} />
 			</Switch>
 			{/* 기본 축약형 */}
 			<Route path='/department' component={Department} />
@@ -63,7 +62,7 @@ function App() {
 
 			{/* Menu 컴포넌트를 App.js에서 호출한 뒤 toggle 객체를 각각 메인, 서브 헤더로 전달해서 toogle 메뉴 기능이
 			동작하도록 처리 */}
-			<Menu ref={menu} />
+			<Menu />
 		</>
 	);
 }

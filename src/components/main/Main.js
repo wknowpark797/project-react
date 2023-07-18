@@ -7,7 +7,7 @@ import Visual from './Visual';
 import Btns from './Btns';
 import { useState } from 'react';
 
-function Main({ menu }) {
+function Main() {
 	/*
 		부모요소에 state와 state변경 함수를 만들기
 		- 값을 전달해야 하는 자식 컴포넌트에는 state변경 함수를 prop으로 전달
@@ -19,7 +19,7 @@ function Main({ menu }) {
 	return (
 		<main>
 			{/* 메인 전용 라우터 Header */}
-			<Header type={'main'} menu={menu} />
+			<Header type={'main'} />
 
 			<Visual />
 			<News />
