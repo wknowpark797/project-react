@@ -1,31 +1,32 @@
-import { forwardRef, useImperativeHandle, useState, useEffect } from 'react';
+/*
+	[ Client Side State 설정하기 ]
+
+	{ open: false, // false - 메뉴제거, true - 메뉴오픈 }
+
+	1. menuSlice.js를 생성해서 위의 정보값을 초기 전역 state로 등록
+	2. reducer에는 해당 전역 state값을 변경해주는 함수를 등록 (close, toggle)
+	3. 해당 함수를 원하는 컴포넌트에서 자유롭게 호출해서 전역 state를 변경할 수 있다.
+*/
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { NavLink, Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { close } from '../../redux/menuSlice'; // menuSlice로부터 전역 state값을 변경해주는 close 함수를 import
 
-const Menu = forwardRef((props, ref) => {
+function Menu() {
 	const active = { color: 'aqua' };
-	const [Open, setOpen] = useState(false);
-
-	useEffect(() => {
-		// 모든 페이지에 있어야 하는 요소이므로 unmount할 때 제거할 필요가 없다.
-		window.addEventListener('resize', () => {
-			if (window.innerWidth >= 1200) setOpen(false);
-		});
-	}, []);
-
-	useImperativeHandle(ref, () => {
-		return { toggle: () => setOpen(!Open) };
-	});
+	const dispatch = useDispatch();
+	const menu = useSelector((store) => store.menu.open);
 
 	return (
 		<AnimatePresence>
-			{Open && (
+			{menu && (
 				<motion.nav
 					id='mobile-panel'
 					initial={{ opacity: 0, x: -280 }}
 					animate={{ opacity: 1, x: 0, transition: { duration: 0.5 } }}
 					exit={{ opacity: 0, x: -280, transition: { duration: 0.5 } }}
-					onClick={() => setOpen(false)}
+					onClick={() => dispatch(close())} // 닫기버튼 클릭시 전역 state를 변경하는 close 함수를 호출해서 그 결과값인 action객체를 dispatch로 전달
 				>
 					<h1>
 						<Link to='/'>LOGO</Link>
@@ -67,6 +68,6 @@ const Menu = forwardRef((props, ref) => {
 			)}
 		</AnimatePresence>
 	);
-});
+}
 
 export default Menu;
