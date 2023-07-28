@@ -1,4 +1,5 @@
-import { useSelector } from 'react-redux';
+// import { useSelector } from 'react-redux';
+import { useFlickrQuery } from '../../hooks/useFlickrQuery';
 
 function Pics({ Scrolled, Pos }) {
 	// 스크롤시 Throttling 없이 매번 호출되어야 한다.
@@ -8,8 +9,9 @@ function Pics({ Scrolled, Pos }) {
 	const base = window.innerHeight / 2;
 	const modifiedPos = currentPos + base;
 
-	const result = useSelector((store) => store.flickr.data);
-	console.log(result);
+	// const result = useSelector((store) => store.flickr.data);
+	const { data, isSuccess } = useFlickrQuery({ type: 'user', user: '198471371@N05' });
+	console.log('Pics data: ', data);
 
 	return (
 		<section id='pics' className='myScroll'>

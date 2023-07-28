@@ -22,3 +22,4 @@ export const useYoutubeQuery = () => {
 };
 
 // 전역 데이터 저장을 캐시 저장으로 대체
+// stale 상태에서 지정한 시간이 지나면 inactive 상태로 변경되고 GC에 의해 삭제

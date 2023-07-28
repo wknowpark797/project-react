@@ -6,14 +6,14 @@ import { Provider } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
 // import youtubeReducer from './redux/youtubeSlice';
 import departmentReducer from './redux/departmentSlice';
-import flickrReducer from './redux/flickrSlice';
+// import flickrReducer from './redux/flickrSlice';
 import menuReducer from './redux/menuSlice';
 
 const store = configureStore({
 	reducer: {
 		// youtube: youtubeReducer,
 		department: departmentReducer,
-		flickr: flickrReducer,
+		// flickr: flickrReducer,
 		menu: menuReducer,
 	},
 });

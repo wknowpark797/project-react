@@ -1,9 +1,11 @@
 import Layout from '../common/Layout';
 import Masonry from 'react-masonry-component';
 import { useState, useEffect, useRef } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { fetchFlickr } from '../../redux/flickrSlice';
+// import { useSelector, useDispatch } from 'react-redux';
+// import { fetchFlickr } from '../../redux/flickrSlice';
 import Modal from '../common/Modal';
+
+import { useFlickrQuery } from '../../hooks/useFlickrQuery';
 
 function Gallery() {
 	const isUser = useRef(true); // user 데이터 재호출 방지
@@ -14,12 +16,18 @@ function Gallery() {
 	const counter = useRef(0);
 	const firstLoaded = useRef(true);
 	const [Loader, setLoader] = useState(true);
-
 	const modal = useRef(null);
 	const [ModalIndex, setModalIndex] = useState(0);
 
-	const dispatch = useDispatch();
-	const Items = useSelector((store) => store.flickr.data);
+	// const dispatch = useDispatch();
+	// const Items = useSelector((store) => store.flickr.data);
+	const [Opt, setOpt] = useState({ type: 'user', user: '198471371@N05' });
+	const { data: Items, isSuccess } = useFlickrQuery(Opt);
+	/*
+		Custom Hooks는 다른 hook 혹은 일반 함수 안쪽에서 호출 불가능
+		-> useEffect안쪽이나 이벤트 핸들러 안쪽에서 호출 불가능
+		-> 컴포넌트 안쪽에서만 호출 가능
+	*/
 
 	// 기존 갤러리 초기화 함수
 	const resetGallery = (e) => {
@@ -40,7 +48,8 @@ function Gallery() {
 
 		resetGallery(e); // 기존 갤러리 초기화
 
-		dispatch(fetchFlickr({ type: 'interest' }));
+		// dispatch(fetchFlickr({ type: 'interest' }));
+		setOpt({ type: 'interest' });
 		isUser.current = false;
 	};
 
@@ -50,7 +59,8 @@ function Gallery() {
 
 		resetGallery(e);
 
-		dispatch(fetchFlickr({ type: 'user', user: '198471371@N05' }));
+		// dispatch(fetchFlickr({ type: 'user', user: '198471371@N05' }));
+		setOpt({ type: 'user', user: '198471371@N05' });
 	};
 
 	const showSearch = (e) => {
@@ -60,7 +70,8 @@ function Gallery() {
 
 		resetGallery(e);
 
-		dispatch(fetchFlickr({ type: 'search', tags: tag }));
+		// dispatch(fetchFlickr({ type: 'search', tags: tag }));
+		setOpt({ type: 'search', tags: tag });
 		searchInput.current.value = '';
 		isUser.current = false;
 	};
@@ -69,14 +80,15 @@ function Gallery() {
 		console.log(Items);
 		counter.current = 0; // 함수가 재실행될 때마다 counter값을 초기화
 
-		if (Items.length === 0 && !firstLoaded.current) {
+		if (isSuccess && Items.length === 0 && !firstLoaded.current) {
 			setLoader(false);
 			frame.current.classList.add('on');
 
 			const btnMine = btnSet.current.children;
 			btnMine[1].classList.add('on');
 
-			dispatch(fetchFlickr({ type: 'user', user: '198471371@N05' }));
+			// dispatch(fetchFlickr({ type: 'user', user: '198471371@N05' }));
+			setOpt({ type: 'user', user: '198471371@N05' });
 			enableEvent.current = true;
 
 			return alert('이미지 결과값이 없습니다.');
@@ -118,7 +130,7 @@ function Gallery() {
 				}
 			};
 		});
-	}, [Items, dispatch]);
+	}, [Items, isSuccess]);
 
 	return (
 		<>
@@ -142,47 +154,49 @@ function Gallery() {
 
 				<div className='frame' ref={frame}>
 					<Masonry elementType={'div'} options={{ transitionDuration: '0.5s' }}>
-						{Items.map((item, idx) => {
-							return (
-								<article key={idx}>
-									<div className='inner'>
-										<div
-											className='pic'
-											onClick={() => {
-												modal.current?.open();
-												setModalIndex(idx);
-											}}
-										>
-											<img
-												src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`}
-												alt={item.title}
-											/>
-										</div>
-										<h2>{item.title}</h2>
-										<div className='profile'>
-											<img
-												src={`http://farm${item.farm}.staticflickr.com/${item.server}/buddyicons/${item.owner}.jpg`}
-												alt={item.owner}
-												onError={(e) => {
-													e.target.setAttribute('src', 'https://www.flickr.com/images/buddyicon.gif');
-												}}
-											/>
-											<span
-												onClick={(e) => {
-													if (isUser.current) return;
-													isUser.current = true;
-													setLoader(true);
-													frame.current.classList.remove('on');
-													dispatch(fetchFlickr({ type: 'user', user: e.target.innerText }));
+						{isSuccess &&
+							Items.map((item, idx) => {
+								return (
+									<article key={idx}>
+										<div className='inner'>
+											<div
+												className='pic'
+												onClick={() => {
+													modal.current?.open();
+													setModalIndex(idx);
 												}}
 											>
-												{item.owner}
-											</span>
+												<img
+													src={`https://live.staticflickr.com/${item.server}/${item.id}_${item.secret}_m.jpg`}
+													alt={item.title}
+												/>
+											</div>
+											<h2>{item.title}</h2>
+											<div className='profile'>
+												<img
+													src={`http://farm${item.farm}.staticflickr.com/${item.server}/buddyicons/${item.owner}.jpg`}
+													alt={item.owner}
+													onError={(e) => {
+														e.target.setAttribute('src', 'https://www.flickr.com/images/buddyicon.gif');
+													}}
+												/>
+												<span
+													onClick={(e) => {
+														if (isUser.current) return;
+														isUser.current = true;
+														setLoader(true);
+														frame.current.classList.remove('on');
+														setOpt({ type: 'user', user: e.target.innerText });
+														// dispatch(fetchFlickr({ type: 'user', user: e.target.innerText }));
+													}}
+												>
+													{item.owner}
+												</span>
+											</div>
 										</div>
-									</div>
-								</article>
-							);
-						})}
+									</article>
+								);
+							})}
 					</Masonry>
 				</div>
 
@@ -191,10 +205,12 @@ function Gallery() {
 
 			<Modal ref={modal}>
 				{/* 첫번째 렌더링 사이클 이후에 적용되도록 처리 - 체이닝 적용 */}
-				<img
-					src={`https://live.staticflickr.com/${Items[ModalIndex]?.server}/${Items[ModalIndex]?.id}_${Items[ModalIndex]?.secret}_b.jpg`}
-					alt={Items[ModalIndex]?.title}
-				/>
+				{isSuccess && (
+					<img
+						src={`https://live.staticflickr.com/${Items[ModalIndex]?.server}/${Items[ModalIndex]?.id}_${Items[ModalIndex]?.secret}_b.jpg`}
+						alt={Items[ModalIndex]?.title}
+					/>
+				)}
 			</Modal>
 		</>
 	);
