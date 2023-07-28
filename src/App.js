@@ -14,7 +14,7 @@ import Youtube from './components/sub/Youtube';
 
 import './scss/style.scss';
 
-import { fetchYoutube } from './redux/youtubeSlice';
+// import { fetchYoutube } from './redux/youtubeSlice';
 import { fetchDepartment } from './redux/departmentSlice';
 import { fetchFlickr } from './redux/flickrSlice';
 import { useDispatch } from 'react-redux';
@@ -38,7 +38,7 @@ function App() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(fetchYoutube());
+		// dispatch(fetchYoutube());
 		dispatch(fetchDepartment());
 		dispatch(fetchFlickr({ type: 'user', user: '198471371@N05' }));
 	}, [dispatch]);
