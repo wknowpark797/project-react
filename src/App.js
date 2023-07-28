@@ -19,6 +19,9 @@ import { fetchDepartment } from './redux/departmentSlice';
 import { fetchFlickr } from './redux/flickrSlice';
 import { useDispatch } from 'react-redux';
 
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+
 /*
 	[ redux-toolkit 작업 흐름 ]
 
@@ -31,6 +34,7 @@ import { useDispatch } from 'react-redux';
 */
 
 function App() {
+	const queryClient = new QueryClient();
 	const dispatch = useDispatch();
 
 	useEffect(() => {
@@ -40,7 +44,7 @@ function App() {
 	}, [dispatch]);
 
 	return (
-		<>
+		<QueryClientProvider client={queryClient}>
 			{/* Switch는 내부에 중복되는 라우트 경로가 있을 때 먼저 작성된 라우터를 채택하고 나머지는 무시 */}
 			<Switch>
 				<Route exact path='/' render={() => <Main />} />
@@ -63,7 +67,9 @@ function App() {
 			{/* Menu 컴포넌트를 App.js에서 호출한 뒤 toggle 객체를 각각 메인, 서브 헤더로 전달해서 toogle 메뉴 기능이
 			동작하도록 처리 */}
 			<Menu />
-		</>
+
+			<ReactQueryDevtools />
+		</QueryClientProvider>
 	);
 }
 
