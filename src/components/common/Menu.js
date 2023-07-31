@@ -8,32 +8,39 @@
 	3. 해당 함수를 원하는 컴포넌트에서 자유롭게 호출해서 전역 state를 변경할 수 있다.
 */
 
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { NavLink, Link } from 'react-router-dom';
-import { useSelector, useDispatch } from 'react-redux';
-import { close } from '../../redux/menuSlice'; // menuSlice로부터 전역 state값을 변경해주는 close 함수를 import
+// import { useSelector, useDispatch } from 'react-redux';
+// import { close } from '../../redux/menuSlice'; // menuSlice로부터 전역 state값을 변경해주는 close 함수를 import
+import { useGlobalData } from '../../hooks/useGlobalContext';
 
 function Menu() {
 	const active = { color: 'aqua' };
-	const dispatch = useDispatch();
-	const menu = useSelector((store) => store.menu.open);
+	// const dispatch = useDispatch();
+	// const menu = useSelector((store) => store.menu.open);
+	const { MenuOpen, setMenuOpen } = useGlobalData();
 
+	/*
 	useEffect(() => {
 		window.addEventListener('resize', () => {
 			if (window.innerWidth >= 1200) dispatch(close());
 		});
 	}, [dispatch]);
+	*/
 
 	return (
 		<AnimatePresence>
-			{menu && (
+			{MenuOpen && (
 				<motion.nav
 					id='mobile-panel'
 					initial={{ opacity: 0, x: -280 }}
 					animate={{ opacity: 1, x: 0, transition: { duration: 0.5 } }}
 					exit={{ opacity: 0, x: -280, transition: { duration: 0.5 } }}
-					onClick={() => dispatch(close())} // 닫기버튼 클릭시 전역 state를 변경하는 close 함수를 호출해서 그 결과값인 action객체를 dispatch로 전달
+					// onClick={() => dispatch(close())} // 닫기버튼 클릭시 전역 state를 변경하는 close 함수를 호출해서 그 결과값인 action객체를 dispatch로 전달
+					onClick={() => {
+						setMenuOpen(false);
+					}}
 				>
 					<h1>
 						<Link to='/'>LOGO</Link>

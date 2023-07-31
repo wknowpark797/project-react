@@ -2,13 +2,15 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import App from './App';
 import { HashRouter } from 'react-router-dom';
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
+// import { Provider } from 'react-redux';
+// import { configureStore } from '@reduxjs/toolkit';
 // import youtubeReducer from './redux/youtubeSlice';
 // import departmentReducer from './redux/departmentSlice';
 // import flickrReducer from './redux/flickrSlice';
-import menuReducer from './redux/menuSlice';
+// import menuReducer from './redux/menuSlice';
+import { GlobalProvider } from './hooks/useGlobalContext';
 
+/*
 const store = configureStore({
 	reducer: {
 		// youtube: youtubeReducer,
@@ -17,12 +19,13 @@ const store = configureStore({
 		menu: menuReducer,
 	},
 });
+*/
 
 ReactDOM.render(
 	<HashRouter>
-		<Provider store={store}>
+		<GlobalProvider>
 			<App />
-		</Provider>
+		</GlobalProvider>
 	</HashRouter>,
 	document.getElementById('root')
 );

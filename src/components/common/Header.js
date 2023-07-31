@@ -2,8 +2,9 @@ import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 import { memo } from 'react';
-import { useDispatch } from 'react-redux';
-import { toggle } from '../../redux/menuSlice';
+// import { useDispatch } from 'react-redux';
+// import { toggle } from '../../redux/menuSlice';
+import { useGlobalData } from '../../hooks/useGlobalContext';
 
 function Header({ type }) {
 	const activeClass = 'on';
@@ -13,7 +14,8 @@ function Header({ type }) {
 		};
 	*/
 
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
+	const { MenuOpen, setMenuOpen } = useGlobalData();
 
 	return (
 		<>
@@ -58,7 +60,8 @@ function Header({ type }) {
 				<FontAwesomeIcon
 					icon={faBars}
 					onClick={() => {
-						dispatch(toggle());
+						// dispatch(toggle());
+						setMenuOpen(!MenuOpen);
 					}}
 				/>
 			</header>
