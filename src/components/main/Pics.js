@@ -11,7 +11,6 @@ function Pics({ Scrolled, Pos }) {
 
 	// const result = useSelector((store) => store.flickr.data);
 	const { data, isSuccess } = useFlickrQuery({ type: 'user', user: '198471371@N05' });
-	console.log('Pics data: ', data);
 
 	return (
 		<section id='pics' className='myScroll'>

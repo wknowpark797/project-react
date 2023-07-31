@@ -1,15 +1,16 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react';
 import Anime from '../../asset/anime';
+import { useThrottle } from '../../hooks/useThrottle';
 
 function Btns({ setScrolled, setPos }) {
-	console.log('Btns');
-
 	const btnRef = useRef(null);
 	const pos = useRef([]); // offset값이 초기화되지 않도록 처리
 	const [Num, setNum] = useState(0);
 
 	// myScroll 공통 클래스가 있는 section을 찾아 offset 위치값을 참조객체에 배열로 저장하는 함수
 	const getPos = useCallback(() => {
+		console.log('getPos 실행');
+
 		pos.current = [];
 		const sections = btnRef.current.parentElement.querySelectorAll('.myScroll');
 
@@ -23,11 +24,12 @@ function Btns({ setScrolled, setPos }) {
 	}, [setPos]);
 
 	const activation = useCallback(() => {
+		console.log('activation 실행');
+
 		const base = -window.innerHeight / 2;
 		const scroll = window.scrollY;
 		const btns = btnRef.current.children;
 		const boxs = btnRef.current.parentElement.querySelectorAll('.myScroll');
-		setScrolled(scroll);
 
 		pos.current.forEach((pos, idx) => {
 			if (scroll >= pos + base) {
@@ -38,7 +40,16 @@ function Btns({ setScrolled, setPos }) {
 				boxs[idx].classList.add('on');
 			}
 		});
+	}, []);
+
+	const changeScroll = useCallback(() => {
+		const scroll = window.scrollY;
+		setScrolled(scroll);
 	}, [setScrolled]);
+
+	// Throttle 적용
+	const getPos2 = useThrottle(getPos);
+	const activation2 = useThrottle(activation);
 
 	useEffect(() => {
 		getPos();
@@ -46,8 +57,9 @@ function Btns({ setScrolled, setPos }) {
 			[ window 객체 이벤트 사용의 문제점 ]
 			window 객체는 리액트가 제어할 수 없는 최상위 요소
 		*/
-		window.addEventListener('resize', getPos);
-		window.addEventListener('scroll', activation);
+		window.addEventListener('resize', getPos2);
+		window.addEventListener('scroll', activation2);
+		window.addEventListener('scroll', changeScroll);
 
 		/*
 			리액트는 SPA이므로 페이지 변경시 스크롤값이 초기화 되지 않는다.
@@ -64,11 +76,12 @@ function Btns({ setScrolled, setPos }) {
 
 				핸들러 함수를 제거하기 위해서는 해당 함수가 외부 함수로 선언되어 있어야 한다.
 			*/
-			window.removeEventListener('resize', getPos);
-			window.removeEventListener('scroll', activation);
+			window.removeEventListener('resize', getPos2);
+			window.removeEventListener('scroll', activation2);
+			window.removeEventListener('scroll', changeScroll);
 			window.scrollTo({ top: 0, left: 0, behavior: 'smooth' });
 		};
-	}, [getPos, activation]);
+	}, [getPos2, activation2, changeScroll, getPos]);
 	/*
 		[ ESLint 권고문구 ]
 		eslint가 의존성 배열에 activation, getPos 함수의 등록 권고문구를 띄우는 이유
