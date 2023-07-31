@@ -1,5 +1,5 @@
 import { Route, Switch } from 'react-router-dom';
-import { useEffect } from 'react';
+// import { useEffect } from 'react';
 
 import Footer from './components/common/Footer';
 import Header from './components/common/Header';
@@ -14,10 +14,10 @@ import Youtube from './components/sub/Youtube';
 
 import './scss/style.scss';
 
-import { fetchDepartment } from './redux/departmentSlice';
+// import { fetchDepartment } from './redux/departmentSlice';
 // import { fetchYoutube } from './redux/youtubeSlice';
 // import { fetchFlickr } from './redux/flickrSlice';
-import { useDispatch } from 'react-redux';
+// import { useDispatch } from 'react-redux';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
@@ -35,13 +35,15 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 function App() {
 	const queryClient = new QueryClient();
-	const dispatch = useDispatch();
+	// const dispatch = useDispatch();
 
+	/*
 	useEffect(() => {
-		dispatch(fetchDepartment());
+		// dispatch(fetchDepartment());
 		// dispatch(fetchYoutube());
 		// dispatch(fetchFlickr({ type: 'user', user: '198471371@N05' }));
 	}, [dispatch]);
+	*/
 
 	return (
 		<QueryClientProvider client={queryClient}>
