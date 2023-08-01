@@ -1,6 +1,7 @@
 import Layout from '../common/Layout';
 import ContactForm from './ContactForm';
-import { useState, useEffect, useRef, useMemo } from 'react';
+import { useState, useEffect, useRef, useMemo, useCallback } from 'react';
+import { useThrottle } from '../../hooks/useThrottle';
 
 function Contact() {
 	// 지도가 들어갈 프레임은 가상요소 참조를 위해 useRef로 참조 객체를 생성
@@ -60,6 +61,17 @@ function Contact() {
 		});
 	}, [Index, kakao]);
 
+	// setCenter가 호출될 때 내부적으로 Index state값에 의존하고 있기 때문에 useEffect 안쪽에서 setCenter를 정의하고 호출한다.
+	const setCenter = useCallback(() => {
+		Location?.setCenter(info.current[Index].latlng);
+	}, [Index, Location]);
+
+	/*
+		Custom hook은 다른 hook 안쪽에서 호출이 불가능하다.
+		-> useThrottle을 활용해야 하는 함수가 useEffect 안쪽에 있다면 밖으로 꺼내어 useThrottle를 적용한 후 또다른 useEffect 안쪽에서 이벤트를 연결한다.
+	*/
+	const setCenter2 = useThrottle(setCenter);
+
 	/*
 		브라우저가 해야할 일에 대한 부분을 useEffect에 작성해준다.
 		- 데이터 Fetching
@@ -85,14 +97,12 @@ function Contact() {
 
 		// 지도 휠 기능 비활성화
 		mapInstance.setZoomable(false);
-
-		// setCenter가 호출될 때 내부적으로 Index state값에 의존하고 있기 때문에 useEffect 안쪽에서 setCenter를 정의하고 호출한다.
-		const setCenter = () => {
-			mapInstance.setCenter(info.current[Index].latlng);
-		};
-		window.addEventListener('resize', setCenter);
-		return () => window.removeEventListener('resize', setCenter);
 	}, [Index, marker, kakao]);
+
+	useEffect(() => {
+		window.addEventListener('resize', setCenter2);
+		return () => window.removeEventListener('resize', setCenter2);
+	}, [setCenter2]);
 
 	useEffect(() => {
 		// Location state에 담겨있는 맵 인스턴스로부터 traffic 레이어 호출 구문 처리 (Traffic state가 변경될 때마다)
