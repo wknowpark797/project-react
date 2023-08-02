@@ -21,6 +21,7 @@ import './scss/style.scss';
 
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { useState } from 'react';
 
 /*
 	[ redux-toolkit 작업 흐름 ]
@@ -34,6 +35,26 @@ import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 */
 
 function App() {
+	console.log('Render...');
+	const [Count, setCount] = useState(0);
+	const [Count2, setCount2] = useState(0);
+
+	const returnPromise = () => {
+		return new Promise((res) => setTimeout(res, 500));
+	};
+
+	const handleClick = () => {
+		// Automatic Batching 2번씩 렌더링
+		returnPromise().then(() => {
+			setCount(Count + 1);
+			setCount2(Count2 + 2);
+		});
+
+		// Automatic Batching 한번에 렌더링 (정상 작동)
+		// setCount(Count + 1);
+		// setCount2(Count2 + 2);
+	};
+
 	const queryClient = new QueryClient();
 	// const dispatch = useDispatch();
 
@@ -47,6 +68,13 @@ function App() {
 
 	return (
 		<QueryClientProvider client={queryClient}>
+			<div style={{ position: 'fixed', zIndex: 10 }}>
+				<button onClick={handleClick}>Button</button>
+				<h1 style={{ color: '#fff' }}>
+					{Count} - {Count2}
+				</h1>
+			</div>
+
 			{/* Switch는 내부에 중복되는 라우트 경로가 있을 때 먼저 작성된 라우터를 채택하고 나머지는 무시 */}
 			<Switch>
 				<Route exact path='/' render={() => <Main />} />
@@ -76,3 +104,10 @@ function App() {
 }
 
 export default App;
+
+/*
+	[ Automatic Batching ]
+	- 여러개의 state값이 하나의 핸들러 함수 안쪽에서 동시에 변경될 때 그룹으로 묶어 한번만 렌더링 처리
+	- 17버전에서도 동작되는 기능이지만 promise를 반환하는 함수 안쪽에서 여러개의 state값이 변경될 경우에는 동작되지 않는다.
+	-> 18버전에서 문제해결
+*/
