@@ -1,6 +1,8 @@
 import Layout from '../common/Layout';
+import { useCallback } from 'react';
 import { useState, useEffect, useRef } from 'react';
 import { useHistory } from 'react-router-dom';
+import { useDebounce } from '../../hooks/useDebounce';
 
 function Member() {
 	const history = useHistory();
@@ -24,6 +26,8 @@ function Member() {
 	const [Val, setVal] = useState(initVal.current);
 	const [Err, setErr] = useState({});
 	const [Submit, setSubmit] = useState(false);
+
+	const DebouncedVal = useDebounce(Val);
 
 	const handleChange = (e) => {
 		// 현재 입력하고 있는 input 요소의 name, value 값을 비구조화할당으로 뽑아서 출력
@@ -52,6 +56,11 @@ function Member() {
 		const { name, value } = e.target;
 		setVal({ ...Val, [name]: value });
 	};
+
+	const showError = useCallback(() => {
+		console.log('show error');
+		setErr(check(DebouncedVal));
+	}, [DebouncedVal]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
@@ -107,6 +116,10 @@ function Member() {
 			history.push('/');
 		}
 	}, [Err, Submit, history]);
+
+	useEffect(() => {
+		showError();
+	}, [DebouncedVal, showError]);
 
 	return (
 		<Layout name={'Member'} bg={'Members.jpg'}>
