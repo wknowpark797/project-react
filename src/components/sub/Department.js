@@ -1,15 +1,22 @@
 import Layout from '../common/Layout';
 // import { useSelector } from 'react-redux';
 import { useDepartmentQuery } from '../../hooks/useDepartmentQuery';
+import { useState, useEffect } from 'react';
 
 function Department() {
 	// const Members = useSelector((store) => store.department.data);
+	const [Mounted, setMounted] = useState(true);
 	const { data: Members, isSuccess } = useDepartmentQuery();
+
+	useEffect(() => {
+		return () => setMounted(false);
+	}, []);
 
 	return (
 		// prop으로 자식요소에 줄바꿈 텍스트를 전달하고 싶을 때 구분자가 될 문자값을 포함하여 전달
 		<Layout name={'Department'} txt={'Hello-World'} bg={'Department.jpg'}>
-			{isSuccess &&
+			{Mounted &&
+				isSuccess &&
 				Members.map((member, idx) => {
 					return (
 						<article key={idx}>

@@ -18,6 +18,7 @@ function Gallery() {
 	const [Loader, setLoader] = useState(true);
 	const modal = useRef(null);
 	const [ModalIndex, setModalIndex] = useState(0);
+	const [Mounted, setMounted] = useState(true);
 
 	// const dispatch = useDispatch();
 	// const Items = useSelector((store) => store.flickr.data);
@@ -77,10 +78,9 @@ function Gallery() {
 	};
 
 	useEffect(() => {
-		console.log(Items);
 		counter.current = 0; // 함수가 재실행될 때마다 counter값을 초기화
 
-		if (isSuccess && Items.length === 0 && !firstLoaded.current) {
+		if (Mounted && isSuccess && Items.length === 0 && !firstLoaded.current) {
 			setLoader(false);
 			frame.current.classList.add('on');
 
@@ -130,7 +130,9 @@ function Gallery() {
 				}
 			};
 		});
-	}, [Items, isSuccess]);
+
+		return () => setMounted(false);
+	}, [Items, isSuccess, Mounted]);
 
 	return (
 		<>

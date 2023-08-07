@@ -1,5 +1,5 @@
 import Layout from '../common/Layout';
-import { useState, useRef } from 'react';
+import { useState, useEffect, useRef } from 'react';
 // import { useSelector } from 'react-redux';
 import Modal from '../common/Modal';
 
@@ -9,12 +9,18 @@ function Youtube() {
 	const modal = useRef(null);
 	const [SelectIdx, setSelectIdx] = useState(0);
 	// const VideoList = useSelector((store) => store.youtube.data);
+	const [Mounted, setMounted] = useState(true);
 	const { data: VideoList, isSuccess } = useYoutubeQuery();
+
+	useEffect(() => {
+		return () => setMounted(false);
+	}, []);
 
 	return (
 		<>
 			<Layout name={'Youtube'} bg={'Youtube.jpg'}>
-				{isSuccess &&
+				{Mounted &&
+					isSuccess &&
 					VideoList.map((video, idx) => {
 						return (
 							<article key={idx}>
