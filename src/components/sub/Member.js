@@ -28,6 +28,7 @@ function Member() {
 	const [Submit, setSubmit] = useState(false);
 
 	const DebouncedVal = useDebounce(Val);
+	const [Mounted, setMounted] = useState(true);
 
 	const handleChange = (e) => {
 		// 현재 입력하고 있는 input 요소의 name, value 값을 비구조화할당으로 뽑아서 출력
@@ -60,15 +61,15 @@ function Member() {
 	const showError = useCallback(() => {
 		console.log('show error');
 		setSubmit(false);
-		setErr(check(DebouncedVal));
-	}, [DebouncedVal]);
+		Mounted && setErr(check(DebouncedVal));
+	}, [DebouncedVal, Mounted]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
 		console.log('현재 state값: ', Val);
 		// check함수에서 반환하는 메세지가 있으면 해당 메세지를 화면에 출력하고 전송중지, 반환하는 메세지가 없으면 인증성공
 		console.log(check(Val));
-		setErr(check(Val));
+		Mounted && setErr(check(Val));
 		setSubmit(true);
 	};
 
@@ -116,6 +117,8 @@ function Member() {
 			alert('모든 인증을 통과하였습니다.');
 			history.push('/');
 		}
+
+		return () => setMounted(false);
 	}, [Err, Submit, history]);
 
 	useEffect(() => {
